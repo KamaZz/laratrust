@@ -2,7 +2,7 @@
 
 namespace Laratrust\Tests\Checkers\User;
 
-use Laratrust\Tests\Models\Role;
+use Laratrust\Tests\Models\Group;
 use Laratrust\Tests\Models\User;
 use Laratrust\Tests\LaratrustTestCase;
 use Laratrust\Tests\Models\Permission;
@@ -20,12 +20,12 @@ class LaratrustUserCanCheckerTestCase extends LaratrustTestCase
         $permissionA = Permission::create(['name' => 'permission_a']);
         $permissionB = Permission::create(['name' => 'permission_b']);
 
-        $role = Role::create(['name' => 'role']);
+        $group = Group::create(['name' => 'group']);
 
-        $role->attachPermissions([$permissionA, $permissionB]);
+        $group->attachPermissions([$permissionA, $permissionB]);
 
         $this->user = User::create(['name' => 'test', 'email' => 'test@test.com']);
-        $this->user->attachRole($role);
+        $this->user->attachGroup($group);
     }
 
     protected function canShouldReturnBooleanAssertions()

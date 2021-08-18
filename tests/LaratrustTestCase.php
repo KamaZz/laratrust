@@ -28,7 +28,7 @@ class LaratrustTestCase extends TestCase
         $app['config']->set('laratrust.user_models.users', 'Laratrust\Tests\Models\User');
         $app['config']->set('laratrust.panel.register', true);
         $app['config']->set('laratrust.models', [
-            'role' => 'Laratrust\Tests\Models\Role',
+            'group' => 'Laratrust\Tests\Models\Group',
             'permission' => 'Laratrust\Tests\Models\Permission',
             'team' => 'Laratrust\Tests\Models\Team',
         ]);

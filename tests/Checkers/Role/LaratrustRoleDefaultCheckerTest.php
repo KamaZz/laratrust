@@ -1,14 +1,14 @@
 <?php
 
-namespace Laratrust\Test\Checkers\Role;
+namespace Laratrust\Test\Checkers\Group;
 
-use Laratrust\Tests\Models\Role;
+use Laratrust\Tests\Models\Group;
 use Laratrust\Tests\LaratrustTestCase;
 use Laratrust\Tests\Models\Permission;
 
-class LaratrustRoleDefaultCheckerTest extends LaratrustTestCase
+class LaratrustGroupDefaultCheckerTest extends LaratrustTestCase
 {
-    protected $role;
+    protected $group;
 
     protected function setUp(): void
     {
@@ -17,7 +17,7 @@ class LaratrustRoleDefaultCheckerTest extends LaratrustTestCase
         $this->migrate();
         $this->app['config']->set('laratrust.checker', 'default');
 
-        $this->role = Role::create(['name' => 'role']);
+        $this->group = Group::create(['name' => 'group']);
     }
 
     public function testHasPermission()
@@ -30,20 +30,20 @@ class LaratrustRoleDefaultCheckerTest extends LaratrustTestCase
         $permA = Permission::create(['name' => 'permission_a']);
         $permB = Permission::create(['name' => 'permission_b']);
 
-        $this->role->permissions()->attach([$permA->id, $permB->id]);
+        $this->group->permissions()->attach([$permA->id, $permB->id]);
 
         /*
         |------------------------------------------------------------
         | Expectation
         |------------------------------------------------------------
          */
-        $this->assertTrue($this->role->hasPermission('permission_a'));
-        $this->assertTrue($this->role->hasPermission('permission_b'));
-        $this->assertFalse($this->role->hasPermission('permission_c'));
+        $this->assertTrue($this->group->hasPermission('permission_a'));
+        $this->assertTrue($this->group->hasPermission('permission_b'));
+        $this->assertFalse($this->group->hasPermission('permission_c'));
 
-        $this->assertTrue($this->role->hasPermission(['permission_a', 'permission_b']));
-        $this->assertTrue($this->role->hasPermission(['permission_a', 'permission_c']));
-        $this->assertFalse($this->role->hasPermission(['permission_a', 'permission_c'], true));
-        $this->assertFalse($this->role->hasPermission(['permission_c', 'permission_d']));
+        $this->assertTrue($this->group->hasPermission(['permission_a', 'permission_b']));
+        $this->assertTrue($this->group->hasPermission(['permission_a', 'permission_c']));
+        $this->assertFalse($this->group->hasPermission(['permission_a', 'permission_c'], true));
+        $this->assertFalse($this->group->hasPermission(['permission_c', 'permission_d']));
     }
 }

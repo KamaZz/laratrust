@@ -10,8 +10,8 @@ class LaratrustModelDefaultCheckerTest extends LaratrustModelCheckerTestCase
         $this->app['config']->set('laratrust.checker', 'default');
     }
 
-    public function testModelDisableTheRolesAndPermissionsCaching()
+    public function testModelDisableTheGroupsAndPermissionsCaching()
     {
-        $this->modelDisableTheRolesAndPermissionsCachingAssertions();
+        $this->modelDisableTheGroupsAndPermissionsCachingAssertions();
     }
 }

@@ -1,13 +1,13 @@
 # Administration Panel
 
-Laratrust comes with a simple administration panel for roles, permissions and their assignment to the users.
+Laratrust comes with a simple administration panel for groups, permissions and their assignment to the users.
 
 Currently it supports:
 
 1. Permissions CRUD.
-2. Roles CRUD and permissions assignment.
-3. Assignment of roles and permission to the multiple users defined in `user_models` in the `config/laratrust.php` file.
-4. Restricting roles from being edited, deleted or removed.
+2. Groups CRUD and permissions assignment.
+3. Assignment of groups and permission to the multiple users defined in `user_models` in the `config/laratrust.php` file.
+4. Restricting groups from being edited, deleted or removed.
 
 ## How to use it
 
@@ -25,11 +25,11 @@ To customize the the URL and other available settings in the panel please go to 
 
 Here are some screenshots of the admin panel.
 <div class="admin-panel-screenshots">
-<img src="/multiple-users.png" alt="Edit role view">
+<img src="/multiple-users.png" alt="Edit group view">
 
-<img src="/role-assign.png" alt="Edit role view">
+<img src="/group-assign.png" alt="Edit group view">
 
-<img src="/role-assign-user.png" alt="Edit role view">
+<img src="/group-assign-user.png" alt="Edit group view">
 
-<img src="/edit-role.png" alt="Edit role view">
+<img src="/edit-group.png" alt="Edit group view">
 </div>

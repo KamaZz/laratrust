@@ -40,39 +40,39 @@ trait LaratrustUserTrait
                 return;
             }
 
-            $user->roles()->sync([]);
+            $user->groups()->sync([]);
             $user->permissions()->sync([]);
         });
     }
 
     /**
-     * Many-to-Many relations with Role.
+     * Many-to-Many relations with Group.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
-    public function roles()
+    public function groups()
     {
-        $roles = $this->morphToMany(
-            Config::get('laratrust.models.role'),
+        $groups = $this->morphToMany(
+            Config::get('laratrust.models.group'),
             'user',
-            Config::get('laratrust.tables.role_user'),
+            Config::get('laratrust.tables.group_user'),
             Config::get('laratrust.foreign_keys.user'),
-            Config::get('laratrust.foreign_keys.role')
+            Config::get('laratrust.foreign_keys.group')
         );
 
         if (Config::get('laratrust.teams.enabled')) {
-            $roles->withPivot(Config::get('laratrust.foreign_keys.team'));
+            $groups->withPivot(Config::get('laratrust.foreign_keys.team'));
         }
 
-        return $roles;
+        return $groups;
     }
 
     /**
-     * Many-to-Many relations with Team associated through the roles.
+     * Many-to-Many relations with Team associated through the groups.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
-    public function rolesTeams()
+    public function groupsTeams()
     {
         if (!Config::get('laratrust.teams.enabled')) {
             return null;
@@ -81,11 +81,11 @@ trait LaratrustUserTrait
         return $this->morphToMany(
             Config::get('laratrust.models.team'),
             'user',
-            Config::get('laratrust.tables.role_user'),
+            Config::get('laratrust.tables.group_user'),
             Config::get('laratrust.foreign_keys.user'),
             Config::get('laratrust.foreign_keys.team')
         )
-            ->withPivot(Config::get('laratrust.foreign_keys.role'));
+            ->withPivot(Config::get('laratrust.foreign_keys.group'));
     }
 
     /**
@@ -128,9 +128,9 @@ trait LaratrustUserTrait
             return collect([]);
         }
         $permissionTeams = $this->permissionsTeams()->get($columns);
-        $roleTeams = $this->rolesTeams()->get($columns);
+        $groupTeams = $this->groupsTeams()->get($columns);
 
-        return $roleTeams->merge($permissionTeams)->unique('id');
+        return $groupTeams->merge($permissionTeams)->unique('id');
     }
 
 
@@ -167,27 +167,27 @@ trait LaratrustUserTrait
     }
 
     /**
-     * Get the the names of the user's roles.
+     * Get the the names of the user's groups.
      *
      * @param  string|bool   $team      Team name.
      * @return bool
      */
-    public function getRoles($team = null)
+    public function getGroups($team = null)
     {
-        return $this->laratrustUserChecker()->getCurrentUserRoles($team);
+        return $this->laratrustUserChecker()->getCurrentUserGroups($team);
     }
 
     /**
-     * Checks if the user has a role by its name.
+     * Checks if the user has a group by its name.
      *
-     * @param  string|array  $name       Role name or array of role names.
-     * @param  string|bool   $team      Team name or requiredAll roles.
-     * @param  bool          $requireAll All roles in the array are required.
+     * @param  string|array  $name       Group name or array of group names.
+     * @param  string|bool   $team      Team name or requiredAll groups.
+     * @param  bool          $requireAll All groups in the array are required.
      * @return bool
      */
-    public function hasRole($name, $team = null, $requireAll = false)
+    public function hasGroup($name, $team = null, $requireAll = false)
     {
-        return $this->laratrustUserChecker()->currentUserHasRole(
+        return $this->laratrustUserChecker()->currentUserHasGroup(
             $name,
             $team,
             $requireAll
@@ -195,36 +195,36 @@ trait LaratrustUserTrait
     }
 
     /**
-     * Checks if the user has a role by its name.
+     * Checks if the user has a group by its name.
      *
-     * @param  string|array  $name       Role name or array of role names.
-     * @param  string|bool   $team      Team name or requiredAll roles.
-     * @param  bool          $requireAll All roles in the array are required.
+     * @param  string|array  $name       Group name or array of group names.
+     * @param  string|bool   $team      Team name or requiredAll groups.
+     * @param  bool          $requireAll All groups in the array are required.
      * @return bool
      */
-    public function isA($role, $team = null, $requireAll = false)
+    public function isA($group, $team = null, $requireAll = false)
     {
-        return $this->hasRole($role, $team, $requireAll);
+        return $this->hasGroup($group, $team, $requireAll);
     }
 
     /**
-     * Checks if the user has a role by its name.
+     * Checks if the user has a group by its name.
      *
-     * @param  string|array  $name       Role name or array of role names.
-     * @param  string|bool   $team      Team name or requiredAll roles.
-     * @param  bool          $requireAll All roles in the array are required.
+     * @param  string|array  $name       Group name or array of group names.
+     * @param  string|bool   $team      Team name or requiredAll groups.
+     * @param  bool          $requireAll All groups in the array are required.
      * @return bool
      */
-    public function isAn($role, $team = null, $requireAll = false)
+    public function isAn($group, $team = null, $requireAll = false)
     {
-        return $this->hasRole($role, $team, $requireAll);
+        return $this->hasGroup($group, $team, $requireAll);
     }
 
     /**
      * Check if user has a permission by its name.
      *
      * @param  string|array  $permission Permission string or array of permissions.
-     * @param  string|bool  $team      Team name or requiredAll roles.
+     * @param  string|bool  $team      Team name or requiredAll groups.
      * @param  bool  $requireAll All permissions in the array are required.
      * @return bool
      */
@@ -241,7 +241,7 @@ trait LaratrustUserTrait
      * Check if user has a permission by its name.
      *
      * @param  string|array  $permission  Permission string or array of permissions.
-     * @param  string|bool  $team  Team name or requiredAll roles.
+     * @param  string|bool  $team  Team name or requiredAll groups.
      * @param  bool  $requireAll  All permissions in the array are required.
      * @return bool
      */
@@ -251,19 +251,19 @@ trait LaratrustUserTrait
     }
 
     /**
-     * Checks role(s) and permission(s).
+     * Checks group(s) and permission(s).
      *
-     * @param  string|array  $roles       Array of roles or comma separated string
+     * @param  string|array  $groups       Array of groups or comma separated string
      * @param  string|array  $permissions Array of permissions or comma separated string.
-     * @param  string|bool  $team      Team name or requiredAll roles.
+     * @param  string|bool  $team      Team name or requiredAll groups.
      * @param  array  $options     validate_all (true|false) or return_type (boolean|array|both)
      * @throws \InvalidArgumentException
      * @return array|bool
      */
-    public function ability($roles, $permissions, $team = null, $options = [])
+    public function ability($groups, $permissions, $team = null, $options = [])
     {
         return $this->laratrustUserChecker()->currentUserHasAbility(
-            $roles,
+            $groups,
             $permissions,
             $team,
             $options
@@ -391,86 +391,86 @@ trait LaratrustUserTrait
     /**
      * Alias to eloquent many-to-many relation's attach() method.
      *
-     * @param  mixed  $role
+     * @param  mixed  $group
      * @param  mixed  $team
      * @return static
      */
-    public function attachRole($role, $team = null)
+    public function attachGroup($group, $team = null)
     {
-        return $this->attachModel('roles', $role, $team);
+        return $this->attachModel('groups', $group, $team);
     }
 
     /**
      * Alias to eloquent many-to-many relation's detach() method.
      *
-     * @param  mixed  $role
+     * @param  mixed  $group
      * @param  mixed  $team
      * @return static
      */
-    public function detachRole($role, $team = null)
+    public function detachGroup($group, $team = null)
     {
-        return $this->detachModel('roles', $role, $team);
+        return $this->detachModel('groups', $group, $team);
     }
 
     /**
-     * Attach multiple roles to a user.
+     * Attach multiple groups to a user.
      *
-     * @param  mixed  $roles
+     * @param  mixed  $groups
      * @param  mixed  $team
      * @return static
      */
-    public function attachRoles($roles = [], $team = null)
+    public function attachGroups($groups = [], $team = null)
     {
-        foreach ($roles as $role) {
-            $this->attachRole($role, $team);
+        foreach ($groups as $group) {
+            $this->attachGroup($group, $team);
         }
 
         return $this;
     }
 
     /**
-     * Detach multiple roles from a user.
+     * Detach multiple groups from a user.
      *
-     * @param  mixed  $roles
+     * @param  mixed  $groups
      * @param  mixed  $team
      * @return static
      */
-    public function detachRoles($roles = [], $team = null)
+    public function detachGroups($groups = [], $team = null)
     {
-        if (empty($roles)) {
-            $roles = $this->roles()->get();
+        if (empty($groups)) {
+            $groups = $this->groups()->get();
         }
 
-        foreach ($roles as $role) {
-            $this->detachRole($role, $team);
+        foreach ($groups as $group) {
+            $this->detachGroup($group, $team);
         }
 
         return $this;
     }
 
     /**
-     * Sync roles to the user.
+     * Sync groups to the user.
      *
-     * @param  array  $roles
+     * @param  array  $groups
      * @param  mixed  $team
      * @param  boolean  $detaching
      * @return static
      */
-    public function syncRoles($roles = [], $team = null, $detaching = true)
+    public function syncGroups($groups = [], $team = null, $detaching = true)
     {
-        return $this->syncModels('roles', $roles, $team, $detaching);
+        return $this->syncModels('groups', $groups, $team, $detaching);
     }
 
     /**
-     * Sync roles to the user without detaching.
+     * Sync groups to the user without detaching.
      *
-     * @param  array  $roles
+     * @param  array  $groups
      * @param  mixed  $team
      * @return static
      */
-    public function syncRolesWithoutDetaching($roles = [], $team = null)
+    public function syncGroupsWithoutDetaching($groups = [], $team = null)
     {
-        return $this->syncRoles($roles, $team, false);
+        return $this->syncGroups($groups, $team, false);
     }
 
     /**
@@ -579,20 +579,20 @@ trait LaratrustUserTrait
     }
 
     /**
-     * Checks if the user has some role and if he owns the thing.
+     * Checks if the user has some group and if he owns the thing.
      *
-     * @param  string|array  $role
+     * @param  string|array  $group
      * @param  Object  $thing
      * @param  array  $options
      * @return boolean
      */
-    public function hasRoleAndOwns($role, $thing, $options = [])
+    public function hasGroupAndOwns($group, $thing, $options = [])
     {
         $options = Helper::checkOrSet('requireAll', $options, [false, true]);
         $options = Helper::checkOrSet('team', $options, [null]);
         $options = Helper::checkOrSet('foreignKeyName', $options, [null]);
 
-        return $this->hasRole($role, $options['team'], $options['requireAll'])
+        return $this->hasGroup($group, $options['team'], $options['requireAll'])
                 && $this->owns($thing, $options['foreignKeyName']);
     }
 
@@ -631,7 +631,7 @@ trait LaratrustUserTrait
         }
         $withColumns = $columns ? ":" . implode(',', $columns) : '';
 
-        $roles = $this->roles()
+        $groups = $this->groups()
             ->when(config('laratrust.teams.enabled') && $team !== false, function ($query) use ($team) {
                 return $query->whereHas('permissions', function ($permissionQuery) use ($team) {
                     $permissionQuery->where(config('laratrust.foreign_keys.team'), Helper::getIdFor($team, 'team'));
@@ -639,8 +639,8 @@ trait LaratrustUserTrait
             })
             ->with("permissions{$withColumns}")->get();
 
-        $rolesPermissions = $roles->flatMap(function ($role) {
-            return $role->permissions;
+        $groupsPermissions = $groups->flatMap(function ($group) {
+            return $group->permissions;
         });
 
         $directPermissions = $this->permissions()
@@ -648,7 +648,7 @@ trait LaratrustUserTrait
                 $query->where(config('laratrust.foreign_keys.team'), Helper::getIdFor($team, 'team'));
             });
 
-        return $directPermissions->get($columns ?? ['*'])->merge($rolesPermissions)->unique('id');
+        return $directPermissions->get($columns ?? ['*'])->merge($groupsPermissions)->unique('id');
     }
 
     /**

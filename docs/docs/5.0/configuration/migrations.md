@@ -15,9 +15,9 @@ php artisan migrate
 
 After the migration, five (or six if you use teams feature) new tables will be present:
 
-* `roles` — stores role records.
+* `groups` — stores group records.
 * `permissions` — stores permission records.
 * `teams` — stores teams records (Only if you use the teams feature).
-* `role_user` — stores [polymorphic](https://laravel.com/docs/eloquent-relationships#polymorphic-relations) relations between roles and users.
-* `permission_role` — stores [many-to-many](https://laravel.com/docs/eloquent-relationships#many-to-many) relations between roles and permissions.
+* `group_user` — stores [polymorphic](https://laravel.com/docs/eloquent-relationships#polymorphic-relations) relations between groups and users.
+* `permission_group` — stores [many-to-many](https://laravel.com/docs/eloquent-relationships#many-to-many) relations between groups and permissions.
 * `permission_user` — stores [polymorphic](https://laravel.com/docs/eloquent-relationships#polymorphic-relations) relations between users and permissions.

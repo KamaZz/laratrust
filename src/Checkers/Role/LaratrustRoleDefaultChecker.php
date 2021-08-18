@@ -1,21 +1,21 @@
 <?php
 
-namespace Laratrust\Checkers\Role;
+namespace Laratrust\Checkers\Group;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 
-class LaratrustRoleDefaultChecker extends LaratrustRoleChecker
+class LaratrustGroupDefaultChecker extends LaratrustGroupChecker
 {
     /**
-     * Checks if the role has a permission by its name.
+     * Checks if the group has a permission by its name.
      *
      * @param  string|array  $permission       Permission name or array of permission names.
      * @param  bool  $requireAll       All permissions in the array are required.
      * @return bool
      */
-    public function currentRoleHasPermission($permission, $requireAll = false)
+    public function currentGroupHasPermission($permission, $requireAll = false)
     {
         if (is_array($permission)) {
             if (empty($permission)) {
@@ -23,7 +23,7 @@ class LaratrustRoleDefaultChecker extends LaratrustRoleChecker
             }
 
             foreach ($permission as $permissionName) {
-                $hasPermission = $this->currentRoleHasPermission($permissionName);
+                $hasPermission = $this->currentGroupHasPermission($permissionName);
 
                 if ($hasPermission && !$requireAll) {
                     return true;
@@ -38,7 +38,7 @@ class LaratrustRoleDefaultChecker extends LaratrustRoleChecker
             return $requireAll;
         }
 
-        foreach ($this->currentRoleCachedPermissions() as $perm) {
+        foreach ($this->currentGroupCachedPermissions() as $perm) {
             if (Str::is($permission, $perm['name'])) {
                 return true;
             }
@@ -48,32 +48,32 @@ class LaratrustRoleDefaultChecker extends LaratrustRoleChecker
     }
 
     /**
-     * Flush the role's cache.
+     * Flush the group's cache.
      *
      * @return void
      */
-    public function currentRoleFlushCache()
+    public function currentGroupFlushCache()
     {
-        Cache::forget('laratrust_permissions_for_role_' . $this->role->getKey());
+        Cache::forget('laratrust_permissions_for_group_' . $this->group->getKey());
     }
 
     /**
-     * Tries to return all the cached permissions of the role.
+     * Tries to return all the cached permissions of the group.
      * If it can't bring the permissions from the cache,
      * it brings them back from the DB.
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function currentRoleCachedPermissions()
+    public function currentGroupCachedPermissions()
     {
-        $cacheKey = 'laratrust_permissions_for_role_' . $this->role->getKey();
+        $cacheKey = 'laratrust_permissions_for_group_' . $this->group->getKey();
 
         if (!Config::get('laratrust.cache.enabled')) {
-            return $this->role->permissions()->get();
+            return $this->group->permissions()->get();
         }
 
         return Cache::remember($cacheKey, Config::get('laratrust.cache.expiration_time', 60), function () {
-            return $this->role->permissions()->get()->toArray();
+            return $this->group->permissions()->get()->toArray();
         });
     }
 }

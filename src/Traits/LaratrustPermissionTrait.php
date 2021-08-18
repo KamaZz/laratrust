@@ -19,7 +19,7 @@ trait LaratrustPermissionTrait
     {
         static::deleting(function ($permission) {
             if (!method_exists(Config::get('laratrust.models.permission'), 'bootSoftDeletes')) {
-                $permission->roles()->sync([]);
+                $permission->groups()->sync([]);
             }
         });
 
@@ -28,7 +28,7 @@ trait LaratrustPermissionTrait
                 return;
             }
 
-            $permission->roles()->sync([]);
+            $permission->groups()->sync([]);
 
             foreach (array_keys(Config::get('laratrust.user_models')) as $key) {
                 $permission->$key()->sync([]);
@@ -37,17 +37,17 @@ trait LaratrustPermissionTrait
     }
 
     /**
-     * Many-to-Many relations with role model.
+     * Many-to-Many relations with group model.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function roles()
+    public function groups()
     {
         return $this->belongsToMany(
-            Config::get('laratrust.models.role'),
-            Config::get('laratrust.tables.permission_role'),
+            Config::get('laratrust.models.group'),
+            Config::get('laratrust.tables.permission_group'),
             Config::get('laratrust.foreign_keys.permission'),
-            Config::get('laratrust.foreign_keys.role')
+            Config::get('laratrust.foreign_keys.group')
         );
     }
 

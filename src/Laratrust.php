@@ -30,15 +30,15 @@ class Laratrust
     }
 
     /**
-     * Checks if the current user has a role by its name.
+     * Checks if the current user has a group by its name.
      *
-     * @param  string  $role  Role name.
+     * @param  string  $group  Group name.
      * @return bool
      */
-    public function hasRole($role, $team = null, $requireAll = false)
+    public function hasGroup($group, $team = null, $requireAll = false)
     {
         if ($user = $this->user()) {
-            return $user->hasRole($role, $team, $requireAll);
+            return $user->hasGroup($group, $team, $requireAll);
         }
 
         return false;
@@ -60,17 +60,17 @@ class Laratrust
     }
 
     /**
-     * Check if the current user has a role or permission by its name.
+     * Check if the current user has a group or permission by its name.
      *
-     * @param  array|string  $roles            The role(s) needed.
+     * @param  array|string  $groups            The group(s) needed.
      * @param  array|string  $permissions      The permission(s) needed.
      * @param  array  $options                 The Options.
      * @return bool
      */
-    public function ability($roles, $permissions, $team = null, $options = [])
+    public function ability($groups, $permissions, $team = null, $options = [])
     {
         if ($user = $this->user()) {
-            return $user->ability($roles, $permissions, $team, $options);
+            return $user->ability($groups, $permissions, $team, $options);
         }
 
         return false;
@@ -93,17 +93,17 @@ class Laratrust
     }
 
     /**
-     * Checks if the user has some role and if he owns the thing.
+     * Checks if the user has some group and if he owns the thing.
      *
-     * @param  string|array  $role
+     * @param  string|array  $group
      * @param  Object  $thing
      * @param  array  $options
      * @return boolean
      */
-    public function hasRoleAndOwns($role, $thing, $options = [])
+    public function hasGroupAndOwns($group, $thing, $options = [])
     {
         if ($user = $this->user()) {
-            return $user->hasRoleAndOwns($role, $thing, $options);
+            return $user->hasGroupAndOwns($group, $thing, $options);
         }
 
         return false;

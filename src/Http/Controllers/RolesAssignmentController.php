@@ -8,15 +8,15 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 
-class RolesAssignmentController
+class GroupsAssignmentController
 {
-    protected $rolesModel;
+    protected $groupsModel;
     protected $permissionModel;
     protected $assignPermissions;
 
     public function __construct()
     {
-        $this->rolesModel = Config::get('laratrust.models.role');
+        $this->groupsModel = Config::get('laratrust.models.group');
         $this->permissionModel = Config::get('laratrust.models.permission');
         $this->assignPermissions = Config::get('laratrust.panel.assign_permissions_to_user');
     }
@@ -31,11 +31,11 @@ class RolesAssignmentController
             abort(404);
         }
 
-        return View::make('laratrust::panel.roles-assignment.index', [
+        return View::make('laratrust::panel.groups-assignment.index', [
             'models' => $modelsKeys,
             'modelKey' => $modelKey,
             'users' => $userModel::query()
-                ->withCount(['roles', 'permissions'])
+                ->withCount(['groups', 'permissions'])
                 ->simplePaginate(10),
         ]);
     }
@@ -47,21 +47,21 @@ class RolesAssignmentController
 
         if (!$userModel) {
             Session::flash('laratrust-error', 'Model was not specified in the request');
-            return redirect(route('laratrust.roles-assignment.index'));
+            return redirect(route('laratrust.groups-assignment.index'));
         }
 
         $user = $userModel::query()
-            ->with(['roles:id,name', 'permissions:id,name'])
+            ->with(['groups:id,name', 'permissions:id,name'])
             ->findOrFail($modelId);
 
-        $roles = $this->rolesModel::orderBy('name')->get(['id', 'name', 'display_name'])
-            ->map(function ($role) use ($user) {
-                $role->assigned = $user->roles
+        $groups = $this->groupsModel::orderBy('name')->get(['id', 'name', 'display_name'])
+            ->map(function ($group) use ($user) {
+                $group->assigned = $user->groups
                 ->pluck('id')
-                    ->contains($role->id);
-                $role->isRemovable = Helper::roleIsRemovable($role);
+                    ->contains($group->id);
+                $group->isRemovable = Helper::groupIsRemovable($group);
 
-                return $role;
+                return $group;
             });
         if ($this->assignPermissions) {
             $permissions = $this->permissionModel::orderBy('name')
@@ -76,9 +76,9 @@ class RolesAssignmentController
         }
 
 
-        return View::make('laratrust::panel.roles-assignment.edit', [
+        return View::make('laratrust::panel.groups-assignment.edit', [
             'modelKey' => $modelKey,
-            'roles' => $roles,
+            'groups' => $groups,
             'permissions' => $this->assignPermissions ? $permissions : null,
             'user' => $user,
         ]);
@@ -95,12 +95,12 @@ class RolesAssignmentController
         }
 
         $user = $userModel::findOrFail($modelId);
-        $user->syncRoles($request->get('roles') ?? []);
+        $user->syncGroups($request->get('groups') ?? []);
         if ($this->assignPermissions) {
             $user->syncPermissions($request->get('permissions') ?? []);
         }
 
-        Session::flash('laratrust-success', 'Roles and permissions assigned successfully');
-        return redirect(route('laratrust.roles-assignment.index', ['model' => $modelKey]));
+        Session::flash('laratrust-success', 'Groups and permissions assigned successfully');
+        return redirect(route('laratrust.groups-assignment.index', ['model' => $modelKey]));
     }
 }

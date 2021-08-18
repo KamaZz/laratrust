@@ -15,7 +15,7 @@ function getDocsNavBar(version) {
             'configuration/after-installation',
             'configuration/migrations',
             'configuration/teams',
-            ['configuration/models/role', 'Model - Role'],
+            ['configuration/models/group', 'Model - Group'],
             ['configuration/models/permission', 'Model - Permission'],
             ['configuration/models/team', 'Model - Team'],
             ['configuration/models/user', 'Model - User'],
@@ -47,7 +47,7 @@ function getDocsNavBar(version) {
           children: [
             'the-basics/migrations',
             'the-basics/teams',
-            ['the-basics/models/role', 'Model - Role'],
+            ['the-basics/models/group', 'Model - Group'],
             ['the-basics/models/permission', 'Model - Permission'],
             ['the-basics/models/team', 'Model - Team'],
             ['the-basics/models/user', 'Model - User'],
@@ -56,7 +56,7 @@ function getDocsNavBar(version) {
         {
           title: 'Usage',
           children: [
-            'usage/roles-and-permissions',
+            'usage/groups-and-permissions',
             'usage/querying-relationships',
             'usage/teams',
             'usage/objects-ownership',

@@ -3,13 +3,13 @@ const { getDocsNavBar, getVersionsLinks, getActiveVersion } = require('./utils')
 module.exports = {
   title: 'Laratrust',
   ga: 'UA-84408499-3',
-  description: 'Laratrust is an easy and flexible way to add roles, permissions and teams authorization to your Laravel application',
+  description: 'Laratrust is an easy and flexible way to add groups, permissions and teams authorization to your Laravel application',
   head: [
     ['link', { rel: 'icon', href: '/favicon.ico' }],
     ['meta', { name: 'robots', content: 'index, follow' }],
     ['meta', { property: 'og:image', content: 'https://laratrust.santigarcor.me/logo.png'}],
-    ['meta', { property: 'og:description', content: 'Laratrust is an easy and flexible way to add roles, permissions and teams authorization to your Laravel application'}],
-    ['meta', { property: 'twitter:description', content: 'Laratrust is an easy and flexible way to add roles, permissions and teams authorization to your Laravel application'}]
+    ['meta', { property: 'og:description', content: 'Laratrust is an easy and flexible way to add groups, permissions and teams authorization to your Laravel application'}],
+    ['meta', { property: 'twitter:description', content: 'Laratrust is an easy and flexible way to add groups, permissions and teams authorization to your Laravel application'}]
   ],
   themeConfig: {
     logo: '/logo.svg',

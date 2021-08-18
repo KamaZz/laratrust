@@ -6,7 +6,7 @@ If you make changes directly to the Laratrust tables and when you run your code 
 php artisan cache:clear
 ```
 
-Remember that Laratrust uses cache in the roles and permissions checks.
+Remember that Laratrust uses cache in the groups and permissions checks.
 
 ---
 If you want to use the `Authorizable` trait you have to do:
@@ -29,11 +29,11 @@ If you use the `Laratrust::can` facade method you don't have to change this meth
 If you encounter an error when doing the migration that looks like::
 ```log
 SQLSTATE[HY000]: General error: 1005 Can't create table 'laravelbootstrapstarter.#sql-42c_f8' (errno: 150)
-    (SQL: alter table `role_user` add constraint role_user_user_id_foreign foreign key (`user_id`)
+    (SQL: alter table `group_user` add constraint group_user_user_id_foreign foreign key (`user_id`)
     references `users` (`id`)) (Bindings: array ())
 ```
 
-Then it is likely that the `id` column in your user table does not match the `user_id` column in `role_user`.
+Then it is likely that the `id` column in your user table does not match the `user_id` column in `group_user`.
 Make sure both are `INT(10)`.
 
 ---

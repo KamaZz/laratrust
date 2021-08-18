@@ -27,7 +27,7 @@ php artisan config:clear
 php artisan laratrust:setup
 ```
 
-This command will generate the migrations, create the `Role` and `Permission` models (if you are using the teams feature it will also create a `Team` model) and will add the trait to the configured user models.
+This command will generate the migrations, create the `Group` and `Permission` models (if you are using the teams feature it will also create a `Team` model) and will add the trait to the configured user models.
 
 4. Dump the autoloader:
 ```bash

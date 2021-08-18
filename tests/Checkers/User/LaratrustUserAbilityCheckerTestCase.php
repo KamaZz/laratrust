@@ -2,7 +2,7 @@
 
 namespace Laratrust\Tests\Checkers\User;
 
-use Laratrust\Tests\Models\Role;
+use Laratrust\Tests\Models\Group;
 use Laratrust\Tests\Models\Team;
 use Laratrust\Tests\Models\User;
 use Laratrust\Tests\LaratrustTestCase;
@@ -24,14 +24,14 @@ class LaratrustUserAbilityCheckerTestCase extends LaratrustTestCase
         $permissionC = Permission::create(['name' => 'permission_c']);
 
         $team = Team::create(['name' => 'team_a']);
-        $roleA = Role::create(['name' => 'role_a']);
-        $roleB = Role::create(['name' => 'role_b']);
+        $groupA = Group::create(['name' => 'group_a']);
+        $groupB = Group::create(['name' => 'group_b']);
 
-        $roleA->attachPermission($permissionA);
-        $roleB->attachPermissions([$permissionB, $permissionC]);
+        $groupA->attachPermission($permissionA);
+        $groupB->attachPermissions([$permissionB, $permissionC]);
 
         $this->user = User::create(['name' => 'test', 'email' => 'test@test.com']);
-        $this->user->attachRole($roleA)->attachRole($roleB, $team);
+        $this->user->attachGroup($groupA)->attachGroup($groupB, $team);
     }
 
     protected function abilityShouldReturnBooleanAssertions()
@@ -44,35 +44,35 @@ class LaratrustUserAbilityCheckerTestCase extends LaratrustTestCase
         // Case: User has everything.
         $this->assertTrue(
             $this->user->ability(
-                ['role_a', 'role_b'],
+                ['group_a', 'group_b'],
                 ['permission_a', 'permission_c']
             )
         );
         $this->assertTrue(
             $this->user->ability(
-                ['role_a', 'role_b'],
+                ['group_a', 'group_b'],
                 ['permission_a', 'permission_c'],
                 'team_a'
             )
         );
         $this->assertTrue(
             $this->user->ability(
-                ['role_a'],
+                ['group_a'],
                 ['permission_a'],
                 ['validate_all' => true]
             )
         );
 
-        // Case: User lacks a role.
+        // Case: User lacks a group.
         $this->assertTrue(
             $this->user->ability(
-                ['Nonrole_a', 'role_b'],
+                ['Nongroup_a', 'group_b'],
                 ['permission_a', 'permission_b']
             )
         );
         $this->assertFalse(
             $this->user->ability(
-                ['Nonrole_a', 'role_b'],
+                ['Nongroup_a', 'group_b'],
                 ['permission_a', 'permission_b'],
                 ['validate_all' => true]
             )
@@ -81,13 +81,13 @@ class LaratrustUserAbilityCheckerTestCase extends LaratrustTestCase
         // Case: User lacks a permission.
         $this->assertTrue(
             $this->user->ability(
-                ['role_a', 'role_b'],
+                ['group_a', 'group_b'],
                 ['user_cannot_a', 'permission_b']
             )
         );
         $this->assertFalse(
             $this->user->ability(
-                ['role_a', 'role_b'],
+                ['group_a', 'group_b'],
                 ['user_cannot_a', 'permission_b'],
                 ['validate_all' => true]
             )
@@ -96,13 +96,13 @@ class LaratrustUserAbilityCheckerTestCase extends LaratrustTestCase
         // Case: User lacks everything.
         $this->assertFalse(
             $this->user->ability(
-                ['Nonrole_a', 'Nonrole_b'],
+                ['Nongroup_a', 'Nongroup_b'],
                 ['user_cannot_a', 'user_cannot_b']
             )
         );
         $this->assertFalse(
             $this->user->ability(
-                ['Nonrole_a', 'Nonrole_b'],
+                ['Nongroup_a', 'Nongroup_b'],
                 ['user_cannot_a', 'user_cannot_b'],
                 ['validate_all' => true]
             )
@@ -119,22 +119,22 @@ class LaratrustUserAbilityCheckerTestCase extends LaratrustTestCase
         // Case: User has everything.
         $this->assertSame(
             [
-                'roles' => ['role_a' => true, 'role_b' => true],
+                'groups' => ['group_a' => true, 'group_b' => true],
                 'permissions' => ['permission_a' => true, 'permission_b' => true]
             ],
             $this->user->ability(
-                ['role_a', 'role_b'],
+                ['group_a', 'group_b'],
                 ['permission_a', 'permission_b'],
                 ['return_type' => 'array']
             )
         );
         $this->assertSame(
             [
-                'roles' => ['role_a' => false, 'role_b' => true],
+                'groups' => ['group_a' => false, 'group_b' => true],
                 'permissions' => ['permission_a' => false, 'permission_b' => true]
             ],
             $this->user->ability(
-                ['role_a', 'role_b'],
+                ['group_a', 'group_b'],
                 ['permission_a', 'permission_b'],
                 'team_a',
                 ['validate_all' => true, 'return_type' => 'array']
@@ -142,11 +142,11 @@ class LaratrustUserAbilityCheckerTestCase extends LaratrustTestCase
         );
         $this->assertSame(
             [
-                'roles' => ['role_a' => true],
+                'groups' => ['group_a' => true],
                 'permissions' => ['permission_a' => true]
             ],
             $this->user->ability(
-                ['role_a'],
+                ['group_a'],
                 ['permission_a'],
                 ['validate_all' => true, 'return_type' => 'array']
             )
@@ -164,12 +164,12 @@ class LaratrustUserAbilityCheckerTestCase extends LaratrustTestCase
             [
                 true,
                 [
-                    'roles' => ['role_a' => true, 'role_b' => true],
+                    'groups' => ['group_a' => true, 'group_b' => true],
                     'permissions' => ['permission_a' => true, 'permission_b' => true]
                 ]
             ],
             $this->user->ability(
-                ['role_a', 'role_b'],
+                ['group_a', 'group_b'],
                 ['permission_a', 'permission_b'],
                 ['return_type' => 'both']
             )
@@ -178,12 +178,12 @@ class LaratrustUserAbilityCheckerTestCase extends LaratrustTestCase
             [
                 true,
                 [
-                    'roles' => ['role_a' => false, 'role_b' => true],
+                    'groups' => ['group_a' => false, 'group_b' => true],
                     'permissions' => ['permission_a' => false, 'permission_b' => true]
                 ]
             ],
             $this->user->ability(
-                ['role_a', 'role_b'],
+                ['group_a', 'group_b'],
                 ['permission_a', 'permission_b'],
                 'team_a',
                 ['return_type' => 'both']
@@ -193,12 +193,12 @@ class LaratrustUserAbilityCheckerTestCase extends LaratrustTestCase
             [
                 true,
                 [
-                    'roles' => ['role_a' => true, 'role_b' => true],
+                    'groups' => ['group_a' => true, 'group_b' => true],
                     'permissions' => ['permission_a' => true, 'permission_b' => true]
                 ]
             ],
             $this->user->ability(
-                ['role_a', 'role_b'],
+                ['group_a', 'group_b'],
                 ['permission_a', 'permission_b'],
                 ['validate_all' => true, 'return_type' => 'both']
             )
@@ -214,12 +214,12 @@ class LaratrustUserAbilityCheckerTestCase extends LaratrustTestCase
         */
         $this->assertSame(
             $this->user->ability(
-                ['role_a', 'Nonrole_b'],
+                ['group_a', 'Nongroup_b'],
                 ['permission_a', 'user_cannot_b'],
                 ['return_type' => 'both']
             ),
             $this->user->ability(
-                'role_a|Nonrole_b',
+                'group_a|Nongroup_b',
                 'permission_a|user_cannot_b',
                 ['return_type' => 'both']
             )
@@ -227,12 +227,12 @@ class LaratrustUserAbilityCheckerTestCase extends LaratrustTestCase
 
         $this->assertSame(
             $this->user->ability(
-                ['role_a'],
+                ['group_a'],
                 ['permission_a'],
                 ['return_type' => 'both']
             ),
             $this->user->ability(
-                'role_a',
+                'group_a',
                 'permission_a',
                 ['return_type' => 'both']
             )
@@ -249,11 +249,11 @@ class LaratrustUserAbilityCheckerTestCase extends LaratrustTestCase
         // Case: User has everything.
         $this->assertSame(
             $this->user->ability(
-                ['role_a', 'role_b'],
+                ['group_a', 'group_b'],
                 ['permission_a', 'permission_b']
             ),
             $this->user->ability(
-                ['role_a', 'role_b'],
+                ['group_a', 'group_b'],
                 ['permission_a', 'permission_b'],
                 ['validate_all' => false, 'return_type' => 'boolean']
             )
@@ -261,26 +261,26 @@ class LaratrustUserAbilityCheckerTestCase extends LaratrustTestCase
 
         $this->assertSame(
             $this->user->ability(
-                ['role_a', 'role_b'],
+                ['group_a', 'group_b'],
                 ['permission_a', 'permission_b'],
                 'team_a'
             ),
             $this->user->ability(
-                ['role_a', 'role_b'],
+                ['group_a', 'group_b'],
                 ['permission_a', 'permission_b'],
                 'team_a',
                 ['validate_all' => false, 'return_type' => 'boolean']
             )
         );
 
-        // Case: User lacks a role.
+        // Case: User lacks a group.
         $this->assertSame(
             $this->user->ability(
-                ['Nonrole_a', 'role_b'],
+                ['Nongroup_a', 'group_b'],
                 ['permission_a', 'permission_b']
             ),
             $this->user->ability(
-                ['Nonrole_a', 'role_b'],
+                ['Nongroup_a', 'group_b'],
                 ['permission_a', 'permission_b'],
                 ['validate_all' => false, 'return_type' => 'boolean']
             )
@@ -294,27 +294,27 @@ class LaratrustUserAbilityCheckerTestCase extends LaratrustTestCase
         | Assertion
         |------------------------------------------------------------
         */
-        $this->assertFalse($this->isExceptionThrown($this->user, ['RoleA'], ['manage_a'], ['return_type' => 'boolean']));
-        $this->assertFalse($this->isExceptionThrown($this->user, ['RoleA'], ['manage_a'], ['return_type' => 'array']));
-        $this->assertFalse($this->isExceptionThrown($this->user, ['RoleA'], ['manage_a'], ['return_type' => 'both']));
-        $this->assertTrue($this->isExceptionThrown($this->user, ['RoleA'], ['manage_a'], ['return_type' => 'potato']));
-        $this->assertTrue($this->isExceptionThrown($this->user, ['RoleA'], ['manage_a'], ['validate_all' => 'potato']));
+        $this->assertFalse($this->isExceptionThrown($this->user, ['GroupA'], ['manage_a'], ['return_type' => 'boolean']));
+        $this->assertFalse($this->isExceptionThrown($this->user, ['GroupA'], ['manage_a'], ['return_type' => 'array']));
+        $this->assertFalse($this->isExceptionThrown($this->user, ['GroupA'], ['manage_a'], ['return_type' => 'both']));
+        $this->assertTrue($this->isExceptionThrown($this->user, ['GroupA'], ['manage_a'], ['return_type' => 'potato']));
+        $this->assertTrue($this->isExceptionThrown($this->user, ['GroupA'], ['manage_a'], ['validate_all' => 'potato']));
     }
 
     /**
      * Check if an exception is thrown when checking the user ability
      * @param  \Laratrust\Tests\Models\User  $user
-     * @param  array  $roles
+     * @param  array  $groups
      * @param  array  $perms
      * @param  array  $options
      * @return boolean
      */
-    public function isExceptionThrown($user, $roles, $perms, $options)
+    public function isExceptionThrown($user, $groups, $perms, $options)
     {
         $isExceptionThrown = false;
 
         try {
-            $user->ability($roles, $perms, $options);
+            $user->ability($groups, $perms, $options);
         } catch (\InvalidArgumentException $e) {
             $isExceptionThrown = true;
         }

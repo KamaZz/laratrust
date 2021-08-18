@@ -17,22 +17,22 @@ class LaratrustMiddleware
      * Check if the request has authorization to continue.
      *
      * @param  string $type
-     * @param  string $rolesPermissions
+     * @param  string $groupsPermissions
      * @param  string|null $team
      * @param  string|null $options
      * @return boolean
      */
-    protected function authorization($type, $rolesPermissions, $team, $options)
+    protected function authorization($type, $groupsPermissions, $team, $options)
     {
         list($team, $requireAll, $guard) = $this->assignRealValuesTo($team, $options);
-        $method = $type == 'roles' ? 'hasRole' : 'hasPermission';
+        $method = $type == 'groups' ? 'hasGroup' : 'hasPermission';
 
-        if (!is_array($rolesPermissions)) {
-            $rolesPermissions = explode(self::DELIMITER, $rolesPermissions);
+        if (!is_array($groupsPermissions)) {
+            $groupsPermissions = explode(self::DELIMITER, $groupsPermissions);
         }
 
         return !Auth::guard($guard)->guest()
-            && Auth::guard($guard)->user()->$method($rolesPermissions, $team, $requireAll);
+            && Auth::guard($guard)->user()->$method($groupsPermissions, $team, $requireAll);
     }
 
     /**

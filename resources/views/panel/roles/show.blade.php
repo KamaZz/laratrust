@@ -1,6 +1,6 @@
 @extends('laratrust::panel.layout')
 
-@section('title', "Role details")
+@section('title', "Group details")
 
 @section('content')
   <div>
@@ -12,27 +12,27 @@
       >
         <label class="flex justify-between w-4/12">
           <span class="text-gray-900 font-bold">Name/Code:</span>
-          <span class="ml-4 text-gray-800">{{$role->name}}</span>
+          <span class="ml-4 text-gray-800">{{$group->name}}</span>
         </label>
 
         <label class="flex justify-between w-4/12 my-4">
           <span class="text-gray-900 font-bold">Display Name:</span>
-          <span class="ml-4 text-gray-800">{{$role->display_name}}</span>
+          <span class="ml-4 text-gray-800">{{$group->display_name}}</span>
         </label>
 
         <label class="flex justify-between w-4/12 my-4">
           <span class="text-gray-900 font-bold">Description:</span>
-          <span class="ml-4 text-gray-800">{{$role->description}}</span>
+          <span class="ml-4 text-gray-800">{{$group->description}}</span>
         </label>
         <span class="text-gray-900 font-bold">Permissions:</span>
         <ul class="grid grid-cols-1 md:grid-cols-4 list-inside">
-          @foreach ($role->permissions as $permission)
+          @foreach ($group->permissions as $permission)
             <li class="text-gray-800 list-disc" >{{$permission->display_name ?? $permission->name}}</li>
           @endforeach
         </ul>
         <div class="flex justify-end">
           <a
-            href="{{route("laratrust.roles.index")}}"
+            href="{{route("laratrust.groups.index")}}"
             class="text-blue-600 hover:text-blue-900"
           >
             Back

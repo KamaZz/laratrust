@@ -28,7 +28,7 @@ class SetupCommand extends Command
      */
     protected $calls = [
         'laratrust:migration' => 'Creating migration',
-        'laratrust:role' => 'Creating Role model',
+        'laratrust:group' => 'Creating Group model',
         'laratrust:permission' => 'Creating Permission model',
         'laratrust:add-trait' => 'Adding LaratrustUserTrait to User model'
     ];

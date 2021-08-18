@@ -7,11 +7,11 @@ use Illuminate\Support\Str;
 trait LaratrustHasEvents
 {
     protected static $laratrustObservables = [
-        'roleAttached',
-        'roleDetached',
+        'groupAttached',
+        'groupDetached',
         'permissionAttached',
         'permissionDetached',
-        'roleSynced',
+        'groupSynced',
         'permissionSynced',
     ];
 
@@ -76,25 +76,25 @@ trait LaratrustHasEvents
     }
 
     /**
-     * Register a role attached laratrust event with the dispatcher.
+     * Register a group attached laratrust event with the dispatcher.
      *
      * @param  \Closure|string  $callback
      * @return void
      */
-    public static function roleAttached($callback)
+    public static function groupAttached($callback)
     {
-        static::registerLaratrustEvent('role.attached', $callback);
+        static::registerLaratrustEvent('group.attached', $callback);
     }
 
     /**
-     * Register a role detached laratrust event with the dispatcher.
+     * Register a group detached laratrust event with the dispatcher.
      *
      * @param  \Closure|string  $callback
      * @return void
      */
-    public static function roleDetached($callback)
+    public static function groupDetached($callback)
     {
-        static::registerLaratrustEvent('role.detached', $callback);
+        static::registerLaratrustEvent('group.detached', $callback);
     }
 
     /**
@@ -120,14 +120,14 @@ trait LaratrustHasEvents
     }
 
     /**
-     * Register a role synced laratrust event with the dispatcher.
+     * Register a group synced laratrust event with the dispatcher.
      *
      * @param  \Closure|string  $callback
      * @return void
      */
-    public static function roleSynced($callback)
+    public static function groupSynced($callback)
     {
-        static::registerLaratrustEvent('role.synced', $callback);
+        static::registerLaratrustEvent('group.synced', $callback);
     }
 
     /**

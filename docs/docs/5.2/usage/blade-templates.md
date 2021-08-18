@@ -3,10 +3,10 @@
 Five directives are available for use within your Blade templates. What you give as the directive arguments will be directly passed to the corresponding `Laratrust` function:
 
 ```php
-@role('admin')
-    <p>This is visible to users with the admin role. Gets translated to
-    \Laratrust::hasRole('admin')</p>
-@endrole
+@group('admin')
+    <p>This is visible to users with the admin group. Gets translated to
+    \Laratrust::hasGroup('admin')</p>
+@endgroup
 
 @permission('manage-admins')
     <p>This is visible to users with the given permissions. Gets translated to
@@ -24,8 +24,8 @@ Five directives are available for use within your Blade templates. What you give
     \Laratrust::canAndOwns('edit-post', $post)</p>
 @endOwns
 
-@hasRoleAndOwns('admin', $post)
-    <p>This is visible if the user has the role and owns the object. Gets translated to
-    \Laratrust::hasRoleAndOwns('admin', $post)</p>
+@hasGroupAndOwns('admin', $post)
+    <p>This is visible if the user has the group and owns the object. Gets translated to
+    \Laratrust::hasGroupAndOwns('admin', $post)</p>
 @endOwns
 ```

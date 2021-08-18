@@ -2,20 +2,20 @@
 
 ## Configuration
 
-The middleware are registered automatically as `role`, `permission` and `ability` . If you want to change or customize them, go to your `config/laratrust.php` and set the `middleware.register` value to `false` and add  the following to the `routeMiddleware` array in `app/Http/Kernel.php`:
+The middleware are registered automatically as `group`, `permission` and `ability` . If you want to change or customize them, go to your `config/laratrust.php` and set the `middleware.register` value to `false` and add  the following to the `routeMiddleware` array in `app/Http/Kernel.php`:
 
 ```php
-'role' => \Laratrust\Middleware\LaratrustRole::class,
+'group' => \Laratrust\Middleware\LaratrustGroup::class,
 'permission' => \Laratrust\Middleware\LaratrustPermission::class,
 'ability' => \Laratrust\Middleware\LaratrustAbility::class,
 ```
 
 ## Concepts
 
-You can use a middleware to filter routes and route groups by permission, role or ability:
+You can use a middleware to filter routes and route groups by permission, group or ability:
 
 ```php
-Route::group(['prefix' => 'admin', 'middleware' => ['role:admin']], function() {
+Route::group(['prefix' => 'admin', 'middleware' => ['group:admin']], function() {
     Route::get('/', 'AdminController@welcome');
     Route::get('/manage', ['middleware' => ['permission:manage-admins'], 'uses' => 'AdminController@manageAdmins']);
 });
@@ -24,24 +24,24 @@ Route::group(['prefix' => 'admin', 'middleware' => ['role:admin']], function() {
 If you use the pipe symbol it will be an *OR* operation:
 
 ```php
-'middleware' => ['role:admin|root']
-// $user->hasRole(['admin', 'root']);
+'middleware' => ['group:admin|root']
+// $user->hasGroup(['admin', 'root']);
 
 'middleware' => ['permission:edit-post|edit-user']
-// $user->hasRole(['edit-post', 'edit-user']);
+// $user->hasGroup(['edit-post', 'edit-user']);
 ```
 
 To emulate *AND* functionality you can do:
 
 ```php
-'middleware' => ['role:owner|writer,require_all']
-// $user->hasRole(['owner', 'writer'], true);
+'middleware' => ['group:owner|writer,require_all']
+// $user->hasGroup(['owner', 'writer'], true);
 
 'middleware' => ['permission:edit-post|edit-user,require_all']
 // $user->can(['edit-post', 'edit-user'], true);
 ```
 
-For more complex situations use `ability` middleware which accepts 3 parameters; roles, permissions and options:
+For more complex situations use `ability` middleware which accepts 3 parameters; groups, permissions and options:
 
 ```php
 'middleware' => ['ability:admin|owner,create-post|edit-user,require_all']
@@ -51,7 +51,7 @@ For more complex situations use `ability` middleware which accepts 3 parameters;
 If you want yo use a different guard for the user check you can specify it as an option:
 
 ```php
-'middleware' => ['role:owner|writer,require_all|guard:api']
+'middleware' => ['group:owner|writer,require_all|guard:api']
 'middleware' => ['permission:edit-post|edit-user,guard:some_new_guard']
 'middleware' => ['ability:admin|owner,create-post|edit-user,require_all|guard:web']
 ```
@@ -61,11 +61,11 @@ If you want yo use a different guard for the user check you can specify it as an
 If you are using the teams feature and want to use the middleware checking for your teams, you can use:
 
 ```php
-'middleware' => ['role:admin|root,my-awesome-team,require_all']
-// $user->hasRole(['admin', 'root'], 'my-awesome-team', true);
+'middleware' => ['group:admin|root,my-awesome-team,require_all']
+// $user->hasGroup(['admin', 'root'], 'my-awesome-team', true);
 
 'middleware' => ['permission:edit-post|edit-user,my-awesome-team,require_all']
-// $user->hasRole(['edit-post', 'edit-user'], 'my-awesome-team', true);
+// $user->hasGroup(['edit-post', 'edit-user'], 'my-awesome-team', true);
 
 'middleware' => ['ability:admin|owner,create-post|edit-user,my-awesome-team,require_all']
 // $user->ability(['admin', 'owner'], ['create-post', 'edit-user'], 'my-awesome-team', true);

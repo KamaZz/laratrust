@@ -27,7 +27,7 @@ In order to upgrade from Laratrust 5.0 to 5.1 you have to follow these steps:
 
 5. Delete the `LaratrustSeeder.php` file and run `php artisan laratrust:seeder`.
 
-6. If you use the method `cachedRoles` or `cachedPermissions` you should stop using them and change the parts where you use them because they were deleted from the `LaratrustUserTrait` and `LaratrustRoleTrait`.
+6. If you use the method `cachedGroups` or `cachedPermissions` you should stop using them and change the parts where you use them because they were deleted from the `LaratrustUserTrait` and `LaratrustGroupTrait`.
 
 6. Run `composer dump-autoload`.
 

@@ -1,22 +1,22 @@
 <?php
 
-namespace Laratrust\Checkers\Role;
+namespace Laratrust\Checkers\Group;
 
 use Illuminate\Database\Eloquent\Model;
 
-abstract class LaratrustRoleChecker
+abstract class LaratrustGroupChecker
 {
     /**
      * @var \Illuminate\Database\Eloquent\Model
      */
-    protected $role;
+    protected $group;
 
-    public function __construct(Model $role)
+    public function __construct(Model $group)
     {
-        $this->role = $role;
+        $this->group = $group;
     }
 
-    abstract public function currentRoleHasPermission($permission, $requireAll = false);
+    abstract public function currentGroupHasPermission($permission, $requireAll = false);
 
-    abstract public function currentRoleFlushCache();
+    abstract public function currentGroupFlushCache();
 }

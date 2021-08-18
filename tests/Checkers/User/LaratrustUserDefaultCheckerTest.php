@@ -11,14 +11,14 @@ class LaratrustUserDefaultCheckerTest extends LaratrustUserCheckerTestCase
         $this->app['config']->set('laratrust.checker', 'default');
     }
 
-    public function testGetRoles()
+    public function testGetGroups()
     {
-        $this->getRolesAssertions();
+        $this->getGroupsAssertions();
     }
 
-    public function testHasRole()
+    public function testHasGroup()
     {
-        $this->hasRoleAssertions();
+        $this->hasGroupAssertions();
     }
 
     public function testHasPermission()
@@ -31,8 +31,8 @@ class LaratrustUserDefaultCheckerTest extends LaratrustUserCheckerTestCase
         $this->hasPermissionWithPlaceholderSupportAssertions();
     }
 
-    public function testUserDisableTheRolesAndPermissionsCaching()
+    public function testUserDisableTheGroupsAndPermissionsCaching()
     {
-        $this->userDisableTheRolesAndPermissionsCachingAssertions();
+        $this->userDisableTheGroupsAndPermissionsCachingAssertions();
     }
 }

@@ -4,12 +4,12 @@ namespace Laratrust\Models;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Model;
-use Laratrust\Traits\LaratrustRoleTrait;
-use Laratrust\Contracts\LaratrustRoleInterface;
+use Laratrust\Traits\LaratrustGroupTrait;
+use Laratrust\Contracts\LaratrustGroupInterface;
 
-class LaratrustRole extends Model implements LaratrustRoleInterface
+class LaratrustGroup extends Model implements LaratrustGroupInterface
 {
-    use LaratrustRoleTrait;
+    use LaratrustGroupTrait;
 
     /**
      * The database table used by the model.
@@ -27,6 +27,6 @@ class LaratrustRole extends Model implements LaratrustRoleInterface
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
-        $this->table = Config::get('laratrust.tables.roles');
+        $this->table = Config::get('laratrust.tables.groups');
     }
 }

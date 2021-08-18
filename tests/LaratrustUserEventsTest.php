@@ -2,7 +2,7 @@
 
 namespace Laratrust\Tests;
 
-use Laratrust\Tests\Models\Role;
+use Laratrust\Tests\Models\Group;
 use Laratrust\Tests\Models\User;
 use Laratrust\Tests\Models\Permission;
 
@@ -17,18 +17,18 @@ class LaratrustUserEventsTest extends LaratrustEventsTestCase
         $this->user = User::create(['name' => 'test', 'email' => 'test@test.com']);
     }
 
-    public function testListenToTheRoleAttachedEvent()
+    public function testListenToTheGroupAttachedEvent()
     {
-        $this->listenTo('role.attached', User::class);
+        $this->listenTo('group.attached', User::class);
 
-        $this->assertHasListenersFor('role.attached', User::class);
+        $this->assertHasListenersFor('group.attached', User::class);
     }
 
-    public function testListenToTheRoleDetachedEvent()
+    public function testListenToTheGroupDetachedEvent()
     {
-        $this->listenTo('role.detached', User::class);
+        $this->listenTo('group.detached', User::class);
 
-        $this->assertHasListenersFor('role.detached', User::class);
+        $this->assertHasListenersFor('group.detached', User::class);
     }
 
     public function testListenToThePermissionAttachedEvent()
@@ -45,11 +45,11 @@ class LaratrustUserEventsTest extends LaratrustEventsTestCase
         $this->assertHasListenersFor('permission.detached', User::class);
     }
 
-    public function testListenToTheRoleSyncedEvent()
+    public function testListenToTheGroupSyncedEvent()
     {
-        $this->listenTo('role.synced', User::class);
+        $this->listenTo('group.synced', User::class);
 
-        $this->assertHasListenersFor('role.synced', User::class);
+        $this->assertHasListenersFor('group.synced', User::class);
     }
 
     public function testListenToThePermissionSyncedEvent()
@@ -59,26 +59,26 @@ class LaratrustUserEventsTest extends LaratrustEventsTestCase
         $this->assertHasListenersFor('permission.synced', User::class);
     }
 
-    public function testAnEventIsFiredWhenRoleIsAttachedToUser()
+    public function testAnEventIsFiredWhenGroupIsAttachedToUser()
     {
         User::setEventDispatcher($this->dispatcher);
-        $role = Role::create(['name' => 'role']);
+        $group = Group::create(['name' => 'group']);
 
-        $this->dispatcherShouldFire('role.attached', [$this->user, $role->id, null], User::class);
+        $this->dispatcherShouldFire('group.attached', [$this->user, $group->id, null], User::class);
 
-        $this->user->attachRole($role);
+        $this->user->attachGroup($group);
     }
 
-    public function testAnEventIsFiredWhenRoleIsDetachedFromUser()
+    public function testAnEventIsFiredWhenGroupIsDetachedFromUser()
     {
-        $role = Role::create(['name' => 'role']);
-        $this->user->attachRole($role);
+        $group = Group::create(['name' => 'group']);
+        $this->user->attachGroup($group);
 
         User::setEventDispatcher($this->dispatcher);
 
-        $this->dispatcherShouldFire('role.detached', [$this->user, $role->id, null], User::class);
+        $this->dispatcherShouldFire('group.detached', [$this->user, $group->id, null], User::class);
 
-        $this->user->detachRole($role);
+        $this->user->detachGroup($group);
     }
 
     public function testAnEventIsFiredWhenPermissionIsAttachedToUser()
@@ -104,21 +104,21 @@ class LaratrustUserEventsTest extends LaratrustEventsTestCase
         $this->user->detachPermission($permission);
     }
 
-    public function testAnEventIsFiredWhenRolesAreSynced()
+    public function testAnEventIsFiredWhenGroupsAreSynced()
     {
-        $role = Role::create(['name' => 'role']);
+        $group = Group::create(['name' => 'group']);
 
         User::setEventDispatcher($this->dispatcher);
 
-        $this->dispatcherShouldFire('role.synced', [
+        $this->dispatcherShouldFire('group.synced', [
             $this->user,
             [
-                'attached' => [$role->id], 'detached' => [], 'updated' => [],
+                'attached' => [$group->id], 'detached' => [], 'updated' => [],
             ],
             null
         ], User::class);
 
-        $this->user->syncRoles([$role]);
+        $this->user->syncGroups([$group]);
     }
 
     public function testAnEventIsFiredWhenPermissionsAreSynced()
@@ -142,11 +142,11 @@ class LaratrustUserEventsTest extends LaratrustEventsTestCase
     public function testAddObservableClasses()
     {
         $events = [
-            'role.attached',
-            'role.detached',
+            'group.attached',
+            'group.detached',
             'permission.attached',
             'permission.detached',
-            'role.synced',
+            'group.synced',
             'permission.synced',
         ];
 
@@ -160,11 +160,11 @@ class LaratrustUserEventsTest extends LaratrustEventsTestCase
     public function testObserversShouldBeRemovedAfterFlushEvents()
     {
         $events = [
-            'role.attached',
-            'role.detached',
+            'group.attached',
+            'group.detached',
             'permission.attached',
             'permission.detached',
-            'role.synced',
+            'group.synced',
             'permission.synced',
         ];
 

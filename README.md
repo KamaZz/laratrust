@@ -25,15 +25,15 @@ To install, configure and learn how to use Laratrust please go to the [Documenta
 ## What does Laratrust support?
 
 - Multiple user models.
-- Multiple roles and permissions can be attached to users.
-- Multiple permissions can be attached to roles.
-- Roles and permissions verification.
-- Roles and permissions caching.
-- Events when roles and permissions are attached, detached or synced.
-- Multiple roles and permissions can be attached to users within teams.
+- Multiple groups and permissions can be attached to users.
+- Multiple permissions can be attached to groups.
+- Groups and permissions verification.
+- Groups and permissions caching.
+- Events when groups and permissions are attached, detached or synced.
+- Multiple groups and permissions can be attached to users within teams.
 - Objects ownership verification.
 - Multiple guards for the middleware.
-- A simple administration panel for roles and permissions.
+- A simple administration panel for groups and permissions.
 - Laravel gates and policies.
 
 ## License

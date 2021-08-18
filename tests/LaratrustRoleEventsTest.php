@@ -2,77 +2,77 @@
 
 namespace Laratrust\Tests;
 
-use Laratrust\Tests\Models\Role;
+use Laratrust\Tests\Models\Group;
 use Laratrust\Tests\Models\Permission;
 
-class LaratrustRoleEventsTest extends LaratrustEventsTestCase
+class LaratrustGroupEventsTest extends LaratrustEventsTestCase
 {
-    protected $role;
+    protected $group;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->role = Role::create(['name' => 'role']);
+        $this->group = Group::create(['name' => 'group']);
     }
 
     public function testListenToThePermissionAttachedEvent()
     {
-        $this->listenTo('permission.attached', Role::class);
+        $this->listenTo('permission.attached', Group::class);
 
-        $this->assertHasListenersFor('permission.attached', Role::class);
+        $this->assertHasListenersFor('permission.attached', Group::class);
     }
 
     public function testListenToThePermissionDetachedEvent()
     {
-        $this->listenTo('permission.detached', Role::class);
+        $this->listenTo('permission.detached', Group::class);
 
-        $this->assertHasListenersFor('permission.detached', Role::class);
+        $this->assertHasListenersFor('permission.detached', Group::class);
     }
 
     public function testListenToThePermissionSyncedEvent()
     {
-        $this->listenTo('permission.synced', Role::class);
+        $this->listenTo('permission.synced', Group::class);
 
-        $this->assertHasListenersFor('permission.synced', Role::class);
+        $this->assertHasListenersFor('permission.synced', Group::class);
     }
 
-    public function testAnEventIsFiredWhenPermissionIsAttachedToRole()
+    public function testAnEventIsFiredWhenPermissionIsAttachedToGroup()
     {
         $permission = Permission::create(['name' => 'permission']);
 
-        Role::setEventDispatcher($this->dispatcher);
+        Group::setEventDispatcher($this->dispatcher);
 
-        $this->dispatcherShouldFire('permission.attached', [$this->role, $permission->id], Role::class);
+        $this->dispatcherShouldFire('permission.attached', [$this->group, $permission->id], Group::class);
 
-        $this->role->attachPermission($permission);
+        $this->group->attachPermission($permission);
     }
 
-    public function testAnEventIsFiredWhenPermissionIsDetachedFromRole()
+    public function testAnEventIsFiredWhenPermissionIsDetachedFromGroup()
     {
         $permission = Permission::create(['name' => 'permission']);
-        $this->role->attachPermission($permission);
+        $this->group->attachPermission($permission);
 
-        Role::setEventDispatcher($this->dispatcher);
+        Group::setEventDispatcher($this->dispatcher);
 
-        $this->dispatcherShouldFire('permission.detached', [$this->role, $permission->id], Role::class);
+        $this->dispatcherShouldFire('permission.detached', [$this->group, $permission->id], Group::class);
 
-        $this->role->detachPermission($permission);
+        $this->group->detachPermission($permission);
     }
 
     public function testAnEventIsFiredWhenPermissionsAreSynced()
     {
         $permission = Permission::create(['name' => 'permission']);
-        $this->role->attachPermission($permission);
+        $this->group->attachPermission($permission);
 
-        Role::setEventDispatcher($this->dispatcher);
+        Group::setEventDispatcher($this->dispatcher);
 
         $this->dispatcherShouldFire('permission.synced', [
-            $this->role,
+            $this->group,
             [
                 'attached' => [], 'detached' => [$permission->id], 'updated' => [],
             ]
-        ], Role::class);
+        ], Group::class);
 
-        $this->role->syncPermissions([]);
+        $this->group->syncPermissions([]);
     }
 }

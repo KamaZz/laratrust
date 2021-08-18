@@ -59,7 +59,7 @@
   <priority>0.41</priority>
 </url>
 <url>
-  <loc>https://laratrust.santigarcor.me/docs/6.x/the-basics/models/role.html</loc>
+  <loc>https://laratrust.santigarcor.me/docs/6.x/the-basics/models/group.html</loc>
   <lastmod>2020-05-07T18:38:56+00:00</lastmod>
   <changefreq>yearly</changefreq>
   <priority>0.41</priority>
@@ -83,7 +83,7 @@
   <priority>0.41</priority>
 </url>
 <url>
-  <loc>https://laratrust.santigarcor.me/docs/6.x/usage/roles-and-permissions.html</loc>
+  <loc>https://laratrust.santigarcor.me/docs/6.x/usage/groups-and-permissions.html</loc>
   <lastmod>2020-05-07T18:38:56+00:00</lastmod>
   <changefreq>yearly</changefreq>
   <priority>0.80</priority>
@@ -229,7 +229,7 @@
   <priority>0.41</priority>
 </url>
 <url>
-  <loc>https://laratrust.santigarcor.me/docs/5.2/configuration/models/role.html</loc>
+  <loc>https://laratrust.santigarcor.me/docs/5.2/configuration/models/group.html</loc>
   <lastmod>2020-05-07T18:38:56+00:00</lastmod>
   <changefreq>yearly</changefreq>
   <priority>0.41</priority>
@@ -345,7 +345,7 @@
   <priority>0.41</priority>
 </url>
 <url>
-  <loc>https://laratrust.santigarcor.me/docs/5.1/configuration/models/role.html</loc>
+  <loc>https://laratrust.santigarcor.me/docs/5.1/configuration/models/group.html</loc>
   <lastmod>2020-05-07T18:38:56+00:00</lastmod>
   <changefreq>yearly</changefreq>
   <priority>0.41</priority>
@@ -466,7 +466,7 @@
   <priority>0.41</priority>
 </url>
 <url>
-  <loc>https://laratrust.santigarcor.me/docs/5.0/configuration/models/role.html</loc>
+  <loc>https://laratrust.santigarcor.me/docs/5.0/configuration/models/group.html</loc>
   <lastmod>2020-05-07T18:38:56+00:00</lastmod>
   <changefreq>yearly</changefreq>
   <priority>0.41</priority>

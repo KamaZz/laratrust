@@ -21,22 +21,22 @@ class LaratrustSetupTeams extends Migration
             $table->timestamps();
         });
 
-        Schema::table('{{ $laratrust['tables']['role_user'] }}', function (Blueprint $table) {
-            // Drop role foreign key and primary key
-            $table->dropForeign(['{{ $laratrust['foreign_keys']['role'] }}']);
-            $table->dropPrimary(['{{ $laratrust['foreign_keys']['user'] }}', '{{ $laratrust['foreign_keys']['role'] }}', 'user_type']);
+        Schema::table('{{ $laratrust['tables']['group_user'] }}', function (Blueprint $table) {
+            // Drop group foreign key and primary key
+            $table->dropForeign(['{{ $laratrust['foreign_keys']['group'] }}']);
+            $table->dropPrimary(['{{ $laratrust['foreign_keys']['user'] }}', '{{ $laratrust['foreign_keys']['group'] }}', 'user_type']);
 
             // Add {{ $laratrust['foreign_keys']['team'] }} column
             $table->unsignedInteger('{{ $laratrust['foreign_keys']['team'] }}')->nullable();
 
             // Create foreign keys
-            $table->foreign('{{ $laratrust['foreign_keys']['role'] }}')->references('id')->on('{{ $laratrust['tables']['roles'] }}')
+            $table->foreign('{{ $laratrust['foreign_keys']['group'] }}')->references('id')->on('{{ $laratrust['tables']['groups'] }}')
                 ->onUpdate('cascade')->onDelete('cascade');
             $table->foreign('{{ $laratrust['foreign_keys']['team'] }}')->references('id')->on('{{ $laratrust['tables']['teams'] }}')
                 ->onUpdate('cascade')->onDelete('cascade');
 
             // Create a unique key
-            $table->unique(['{{ $laratrust['foreign_keys']['user'] }}', '{{ $laratrust['foreign_keys']['role'] }}', 'user_type', '{{ $laratrust['foreign_keys']['team'] }}']);
+            $table->unique(['{{ $laratrust['foreign_keys']['user'] }}', '{{ $laratrust['foreign_keys']['group'] }}', 'user_type', '{{ $laratrust['foreign_keys']['team'] }}']);
         });
 
         Schema::table('{{ $laratrust['tables']['permission_user'] }}', function (Blueprint $table) {
@@ -64,7 +64,7 @@ class LaratrustSetupTeams extends Migration
      */
     public function down()
     {
-        Schema::table('{{ $laratrust['tables']['role_user'] }}', function (Blueprint $table) {
+        Schema::table('{{ $laratrust['tables']['group_user'] }}', function (Blueprint $table) {
             $table->dropForeign(['{{ $laratrust['foreign_keys']['team'] }}']);
         });
 

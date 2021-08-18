@@ -1,6 +1,6 @@
 @extends('laratrust::panel.layout')
 
-@section('title', 'Roles Assignment')
+@section('title', 'Groups Assignment')
 
 @section('content')
   <div class="flex flex-col">
@@ -10,7 +10,7 @@
         x-init="$watch('model', value => value != 'initial' ? window.location = `?model=${value}` : '')"
         class="mt-4 align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200 p-4"
       >
-        <span class="text-gray-700">User model to assign roles/permissions</span>
+        <span class="text-gray-700">User model to assign groups/permissions</span>
         <label class="block w-3/12">
           <select class="form-select block w-full mt-1" x-model="model">
             <option value="initial" disabled selected>Select a user model</option>
@@ -25,7 +25,7 @@
               <tr>
                 <th class="th">Id</th>
                 <th class="th">Name</th>
-                <th class="th"># Roles</th>
+                <th class="th"># Groups</th>
                 @if(config('laratrust.panel.assign_permissions_to_user'))<th class="th"># Permissions</th>@endif
                 <th class="th"></th>
               </tr>
@@ -40,7 +40,7 @@
                   {{$user->name ?? 'The model doesn\'t have a `name` attribute'}}
                 </td>
                 <td class="td text-sm leading-5 text-gray-900">
-                  {{$user->roles_count}}
+                  {{$user->groups_count}}
                 </td>
                 @if(config('laratrust.panel.assign_permissions_to_user'))
                 <td class="td text-sm leading-5 text-gray-900">
@@ -49,7 +49,7 @@
                 @endif
                 <td class="flex justify-end px-6 py-4 whitespace-no-wrap text-right border-b border-gray-200 text-sm leading-5 font-medium">
                   <a
-                    href="{{route('laratrust.roles-assignment.edit', ['roles_assignment' => $user->id, 'model' => $modelKey])}}"
+                    href="{{route('laratrust.groups-assignment.edit', ['groups_assignment' => $user->id, 'model' => $modelKey])}}"
                     class="text-blue-600 hover:text-blue-900"
                   >Edit</a>
                 </td>

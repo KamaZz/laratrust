@@ -27,12 +27,12 @@ public function update (Post $post) {
 }
 ```
 
-## Permissions, Roles & Ownership Checks
-If you want to check if a user can do something or has a role, and also is the owner of an object you can use the `isAbleToAndOwns` and `hasRoleAndOwns` methods:
+## Permissions, Groups & Ownership Checks
+If you want to check if a user can do something or has a group, and also is the owner of an object you can use the `isAbleToAndOwns` and `hasGroupAndOwns` methods:
 
 Both methods accept three parameters:
 
-* `permission` or `role` are the permission or role to check (This can be an array of roles or permissions).
+* `permission` or `group` are the permission or group to check (This can be an array of groups or permissions).
 * `thing` is the object used to check the ownership.
 * `options` is a set of options to change the method behavior (optional).
 
@@ -53,12 +53,12 @@ $user->isAbleToAndOwns('edit-post', $post);
 $user->isAbleToAndOwns(['edit-post', 'delete-post'], $post);
 $user->isAbleToAndOwns(['edit-post', 'delete-post'], $post, ['requireAll' => false, 'foreignKeyName' => 'writer_id']);
 
-$user->hasRoleAndOwns('admin', $post);
-$user->hasRoleAndOwns(['admin', 'writer'], $post);
-$user->hasRoleAndOwns(['admin', 'writer'], $post, ['requireAll' => false, 'foreignKeyName' => 'writer_id']);
+$user->hasGroupAndOwns('admin', $post);
+$user->hasGroupAndOwns(['admin', 'writer'], $post);
+$user->hasGroupAndOwns(['admin', 'writer'], $post, ['requireAll' => false, 'foreignKeyName' => 'writer_id']);
 ```
 
-The `Laratrust` class has a shortcut to `owns()`, `isAbleToAndOwns` and `hasRoleAndOwns` methods for the currently logged in user:
+The `Laratrust` class has a shortcut to `owns()`, `isAbleToAndOwns` and `hasGroupAndOwns` methods for the currently logged in user:
 
 ```php
 Laratrust::owns($post);
@@ -67,12 +67,12 @@ Laratrust::owns($post, 'idUser');
 Laratrust::isAbleToAndOwns('edit-post', $post);
 Laratrust::isAbleToAndOwns(['edit-post', 'delete-post'], $post, ['requireAll' => false, 'foreignKeyName' => 'writer_id']);
 
-Laratrust::hasRoleAndOwns('admin', $post);
-Laratrust::hasRoleAndOwns(['admin', 'writer'], $post, ['requireAll' => false, 'foreignKeyName' => 'writer_id']);
+Laratrust::hasGroupAndOwns('admin', $post);
+Laratrust::hasGroupAndOwns(['admin', 'writer'], $post, ['requireAll' => false, 'foreignKeyName' => 'writer_id']);
 ```
 
 ## Ownable Interface
-If the object ownership is resolved through a more complex logic you can implement the Ownable interface so you can use the `owns`, `isAbleToAndOwns` and `hasRoleAndOwns` methods in those cases:
+If the object ownership is resolved through a more complex logic you can implement the Ownable interface so you can use the `owns`, `isAbleToAndOwns` and `hasGroupAndOwns` methods in those cases:
 
 ```php
 class SomeOwnedObject implements \Laratrust\Contracts\Ownable

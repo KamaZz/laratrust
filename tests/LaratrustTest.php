@@ -16,7 +16,7 @@ class LaratrustTest extends LaratrustTestCase
         $this->user = m::mock('_mockedUser');
     }
 
-    public function testHasRole()
+    public function testHasGroup()
     {
         /*
         |------------------------------------------------------------
@@ -25,17 +25,17 @@ class LaratrustTest extends LaratrustTestCase
         */
         $this->laratrust->shouldReceive('user')->andReturn($this->user)->twice()->ordered();
         $this->laratrust->shouldReceive('user')->andReturn(false)->once()->ordered();
-        $this->user->shouldReceive('hasRole')->with('UserRole', null, false)->andReturn(true)->once();
-        $this->user->shouldReceive('hasRole')->with('NonUserRole', null, false)->andReturn(false)->once();
+        $this->user->shouldReceive('hasGroup')->with('UserGroup', null, false)->andReturn(true)->once();
+        $this->user->shouldReceive('hasGroup')->with('NonUserGroup', null, false)->andReturn(false)->once();
 
         /*
         |------------------------------------------------------------
         | Assertion
         |------------------------------------------------------------
         */
-        $this->assertTrue($this->laratrust->hasRole('UserRole'));
-        $this->assertFalse($this->laratrust->hasRole('NonUserRole'));
-        $this->assertFalse($this->laratrust->hasRole('AnyRole'));
+        $this->assertTrue($this->laratrust->hasGroup('UserGroup'));
+        $this->assertFalse($this->laratrust->hasGroup('NonUserGroup'));
+        $this->assertFalse($this->laratrust->hasGroup('AnyGroup'));
     }
 
     public function testIsAbleTo()
@@ -79,7 +79,7 @@ class LaratrustTest extends LaratrustTestCase
         */
         $this->assertTrue($this->laratrust->ability('admin', 'user_can'));
         $this->assertFalse($this->laratrust->ability('admin', 'user_cannot'));
-        $this->assertFalse($this->laratrust->ability('any_role', 'any_permission'));
+        $this->assertFalse($this->laratrust->ability('any_group', 'any_permission'));
     }
 
     public function testUserOwnsaPostModel()
@@ -111,7 +111,7 @@ class LaratrustTest extends LaratrustTestCase
         $this->assertFalse($this->laratrust->owns($postModel, 'UserId'));
     }
 
-    public function testUserHasRoleAndOwnsaPostModel()
+    public function testUserHasGroupAndOwnsaPostModel()
     {
         /*
         |------------------------------------------------------------
@@ -127,15 +127,15 @@ class LaratrustTest extends LaratrustTestCase
         */
         $this->laratrust->shouldReceive('user')->andReturn($this->user)->once()->ordered();
         $this->laratrust->shouldReceive('user')->andReturn(false)->once()->ordered();
-        $this->user->shouldReceive('hasRoleAndOwns')->with('admin', $postModel, [])->andReturn(true)->once();
+        $this->user->shouldReceive('hasGroupAndOwns')->with('admin', $postModel, [])->andReturn(true)->once();
 
         /*
         |------------------------------------------------------------
         | Assertion
         |------------------------------------------------------------
         */
-        $this->assertTrue($this->laratrust->hasRoleAndOwns('admin', $postModel));
-        $this->assertFalse($this->laratrust->hasRoleAndOwns('admin', $postModel));
+        $this->assertTrue($this->laratrust->hasGroupAndOwns('admin', $postModel));
+        $this->assertFalse($this->laratrust->hasGroupAndOwns('admin', $postModel));
     }
 
     public function testUserIsAbleToAndOwnsaPostModel()

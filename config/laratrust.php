@@ -14,14 +14,14 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Which permissions and role checker to use.
+    | Which permissions and group checker to use.
     |--------------------------------------------------------------------------
     |
-    | Defines if you want to use the roles and permissions checker.
+    | Defines if you want to use the groups and permissions checker.
     | Available:
-    | - default: Check for the roles and permissions using the method that Laratrust
+    | - default: Check for the groups and permissions using the method that Laratrust
                  has always used.
-    | - query: Check for the roles and permissions using direct queries to the database.
+    | - query: Check for the groups and permissions using direct queries to the database.
     |           This method doesn't support cache yet.
     |
      */
@@ -42,7 +42,7 @@ return [
         | Use cache in the package
         |--------------------------------------------------------------------------
         |
-        | Defines if Laratrust will use Laravel's Cache to cache the roles and permissions.
+        | Defines if Laratrust will use Laravel's Cache to cache the groups and permissions.
         | NOTE: Currently the database check does not use cache.
         |
         */
@@ -50,10 +50,10 @@ return [
 
         /*
         |--------------------------------------------------------------------------
-        | Time to store in cache Laratrust's roles and permissions.
+        | Time to store in cache Laratrust's groups and permissions.
         |--------------------------------------------------------------------------
         |
-        | Determines the time in SECONDS to store Laratrust's roles and permissions in the cache.
+        | Determines the time in SECONDS to store Laratrust's groups and permissions in the cache.
         |
         */
         'expiration_time' => 3600,
@@ -65,11 +65,11 @@ return [
     |--------------------------------------------------------------------------
     |
     | This is the array that contains the information of the user models.
-    | This information is used in the add-trait command, for the roles and
+    | This information is used in the add-trait command, for the groups and
     | permissions relationships with the possible user models, and the
-    | administration panel to attach roles and permissions to the users.
+    | administration panel to attach groups and permissions to the users.
     |
-    | The key in the array is the name of the relationship inside the roles and permissions.
+    | The key in the array is the name of the relationship inside the groups and permissions.
     |
     */
     'user_models' => [
@@ -81,14 +81,14 @@ return [
     | Laratrust Models
     |--------------------------------------------------------------------------
     |
-    | These are the models used by Laratrust to define the roles, permissions and teams.
+    | These are the models used by Laratrust to define the groups, permissions and teams.
     | If you want the Laratrust models to be in a different namespace or
     | to have a different name, you can do it here.
     |
     */
     'models' => [
 
-        'role' => \App\Models\Role::class,
+        'group' => \App\Models\Group::class,
 
         'permission' => \App\Models\Permission::class,
 
@@ -108,7 +108,7 @@ return [
     */
     'tables' => [
 
-        'roles' => 'roles',
+        'groups' => 'groups',
 
         'permissions' => 'permissions',
 
@@ -117,11 +117,11 @@ return [
          */
         'teams' => 'teams',
 
-        'role_user' => 'role_user',
+        'group_user' => 'group_user',
 
         'permission_user' => 'permission_user',
 
-        'permission_role' => 'permission_role',
+        'permission_group' => 'permission_group',
     ],
 
     /*
@@ -134,22 +134,22 @@ return [
     */
     'foreign_keys' => [
         /**
-         * User foreign key on Laratrust's role_user and permission_user tables.
+         * User foreign key on Laratrust's group_user and permission_user tables.
          */
         'user' => 'user_id',
 
         /**
-         * Role foreign key on Laratrust's role_user and permission_role tables.
+         * Group foreign key on Laratrust's group_user and permission_group tables.
          */
-        'role' => 'role_id',
+        'group' => 'group_id',
 
         /**
-         * Role foreign key on Laratrust's permission_user and permission_role tables.
+         * Group foreign key on Laratrust's permission_user and permission_group tables.
          */
         'permission' => 'permission_id',
 
         /**
-         * Role foreign key on Laratrust's role_user and permission_user tables.
+         * Group foreign key on Laratrust's group_user and permission_user tables.
          */
         'team' => 'team_id',
     ],
@@ -217,13 +217,13 @@ return [
 
         /*
         |--------------------------------------------------------------------------
-        | Strict check for roles/permissions inside teams
+        | Strict check for groups/permissions inside teams
         |--------------------------------------------------------------------------
         |
-        | Determines if a strict check should be done when checking if a role or permission
+        | Determines if a strict check should be done when checking if a group or permission
         | is attached inside a team.
-        | If it's false, when checking a role/permission without specifying the team,
-        | it will check only if the user has attached that role/permission ignoring the team.
+        | If it's false, when checking a group/permission without specifying the team,
+        | it will check only if the user has attached that group/permission ignoring the team.
         |
         */
         'strict_check' => false,
@@ -255,7 +255,7 @@ return [
     | Laratrust Panel
     |--------------------------------------------------------------------------
     |
-    | Section to manage everything related with the admin panel for the roles and permissions.
+    | Section to manage everything related with the admin panel for the groups and permissions.
     |
     */
     'panel' => [
@@ -275,7 +275,7 @@ return [
         | Laratrust Panel Path
         |--------------------------------------------------------------------------
         |
-        | This is the URI path where Laratrust panel for roles and permissions
+        | This is the URI path where Laratrust panel for groups and permissions
         | will be accessible from.
         |
         */
@@ -313,21 +313,21 @@ return [
 
         /*
         |--------------------------------------------------------------------------
-        | Add restriction to roles in the panel
+        | Add restriction to groups in the panel
         |--------------------------------------------------------------------------
         |
-        | Configure which roles can not be editable, deletable and removable.
-        | To add a role to the restriction, use name of the role here.
+        | Configure which groups can not be editable, deletable and removable.
+        | To add a group to the restriction, use name of the group here.
         |
         */
-        'roles_restrictions' => [
-            // The user won't be able to remove roles already assigned to users.
+        'groups_restrictions' => [
+            // The user won't be able to remove groups already assigned to users.
             'not_removable' => [],
 
-            // The user won't be able to edit the role and the permissions assigned.
+            // The user won't be able to edit the group and the permissions assigned.
             'not_editable' => [],
 
-            // The user won't be able to delete the role.
+            // The user won't be able to delete the group.
             'not_deletable' => [],
         ],
     ]

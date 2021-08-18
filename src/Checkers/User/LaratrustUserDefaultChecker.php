@@ -10,45 +10,45 @@ use Illuminate\Support\Facades\Config;
 class LaratrustUserDefaultChecker extends LaratrustUserChecker
 {
     /**
-     * Checks if the user has a role by its name.
+     * Checks if the user has a group by its name.
      *
      * @param  string|bool   $team      Team name.
      * @return array
      */
-    public function getCurrentUserRoles($team = null)
+    public function getCurrentUserGroups($team = null)
     {
-        $roles = collect($this->userCachedRoles());
+        $groups = collect($this->userCachedGroups());
 
         if (config('laratrust.teams.enabled') === false) {
-            return $roles->pluck('name')->toArray();
+            return $groups->pluck('name')->toArray();
         }
 
         if ($team === null && config('laratrust.teams.strict_check') === false) {
-            return $roles->pluck('name')->toArray();
+            return $groups->pluck('name')->toArray();
         }
 
         if ($team === null) {
-            return $roles->filter(function ($role) {
-                return $role['pivot'][config('laratrust.foreign_keys.team')] === null;
+            return $groups->filter(function ($group) {
+                return $group['pivot'][config('laratrust.foreign_keys.team')] === null;
             })->pluck('name')->toArray();
         }
 
         $teamId = Helper::fetchTeam($team);
 
-        return $roles->filter(function ($role) use ($teamId) {
-            return $role['pivot'][config('laratrust.foreign_keys.team')] == $teamId;
+        return $groups->filter(function ($group) use ($teamId) {
+            return $group['pivot'][config('laratrust.foreign_keys.team')] == $teamId;
         })->pluck('name')->toArray();
     }
 
     /**
-     * Checks if the user has a role by its name.
+     * Checks if the user has a group by its name.
      *
-     * @param  string|array  $name       Role name or array of role names.
-     * @param  string|bool   $team      Team name or requiredAll roles.
-     * @param  bool          $requireAll All roles in the array are required.
+     * @param  string|array  $name       Group name or array of group names.
+     * @param  string|bool   $team      Team name or requiredAll groups.
+     * @param  bool          $requireAll All groups in the array are required.
      * @return bool
      */
-    public function currentUserHasRole($name, $team = null, $requireAll = false)
+    public function currentUserHasGroup($name, $team = null, $requireAll = false)
     {
         $name = Helper::standardize($name);
         list($team, $requireAll) = Helper::assignRealValuesTo($team, $requireAll, 'is_bool');
@@ -58,26 +58,26 @@ class LaratrustUserDefaultChecker extends LaratrustUserChecker
                 return true;
             }
 
-            foreach ($name as $roleName) {
-                $hasRole = $this->currentUserHasRole($roleName, $team);
+            foreach ($name as $groupName) {
+                $hasGroup = $this->currentUserHasGroup($groupName, $team);
 
-                if ($hasRole && !$requireAll) {
+                if ($hasGroup && !$requireAll) {
                     return true;
-                } elseif (!$hasRole && $requireAll) {
+                } elseif (!$hasGroup && $requireAll) {
                     return false;
                 }
             }
 
-            // If we've made it this far and $requireAll is FALSE, then NONE of the roles were found.
-            // If we've made it this far and $requireAll is TRUE, then ALL of the roles were found.
+            // If we've made it this far and $requireAll is FALSE, then NONE of the groups were found.
+            // If we've made it this far and $requireAll is TRUE, then ALL of the groups were found.
             // Return the value of $requireAll.
             return $requireAll;
         }
 
         $team = Helper::fetchTeam($team);
 
-        foreach ($this->userCachedRoles() as $role) {
-            if ($role['name'] == $name && Helper::isInSameTeam($role, $team)) {
+        foreach ($this->userCachedGroups() as $group) {
+            if ($group['name'] == $name && Helper::isInSameTeam($group, $team)) {
                 return true;
             }
         }
@@ -89,8 +89,8 @@ class LaratrustUserDefaultChecker extends LaratrustUserChecker
      * Check if user has a permission by its name.
      *
      * @param  string|array  $permission Permission string or array of permissions.
-     * @param  string|bool  $team      Team name or requiredAll roles.
-     * @param  bool  $requireAll All roles in the array are required.
+     * @param  string|bool  $team      Team name or requiredAll groups.
+     * @param  bool  $requireAll All groups in the array are required.
      * @return bool
      */
     public function currentUserHasPermission($permission, $team = null, $requireAll = false)
@@ -127,10 +127,10 @@ class LaratrustUserDefaultChecker extends LaratrustUserChecker
             }
         }
 
-        foreach ($this->userCachedRoles() as $role) {
-            $role = Helper::hidrateModel(Config::get('laratrust.models.role'), $role);
+        foreach ($this->userCachedGroups() as $group) {
+            $group = Helper::hidrateModel(Config::get('laratrust.models.group'), $group);
 
-            if (Helper::isInSameTeam($role, $team) && $role->hasPermission($permission)) {
+            if (Helper::isInSameTeam($group, $team) && $group->hasPermission($permission)) {
                 return true;
             }
         }
@@ -140,28 +140,28 @@ class LaratrustUserDefaultChecker extends LaratrustUserChecker
 
     public function currentUserFlushCache()
     {
-        Cache::forget('laratrust_roles_for_'.$this->userModelCacheKey() .'_'. $this->user->getKey());
+        Cache::forget('laratrust_groups_for_'.$this->userModelCacheKey() .'_'. $this->user->getKey());
         Cache::forget('laratrust_permissions_for_'.$this->userModelCacheKey() .'_'. $this->user->getKey());
     }
 
     /**
-     * Tries to return all the cached roles of the user.
-     * If it can't bring the roles from the cache,
+     * Tries to return all the cached groups of the user.
+     * If it can't bring the groups from the cache,
      * it brings them back from the DB.
      *
      * @param \Illuminate\Database\Eloquent\Model $model
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    protected function userCachedRoles()
+    protected function userCachedGroups()
     {
-        $cacheKey = 'laratrust_roles_for_'.$this->userModelCacheKey() .'_'. $this->user->getKey();
+        $cacheKey = 'laratrust_groups_for_'.$this->userModelCacheKey() .'_'. $this->user->getKey();
 
         if (!Config::get('laratrust.cache.enabled')) {
-            return $this->user->roles()->get();
+            return $this->user->groups()->get();
         }
 
         return Cache::remember($cacheKey, Config::get('laratrust.cache.expiration_time', 60), function () {
-            return $this->user->roles()->get()->toArray();
+            return $this->user->groups()->get()->toArray();
         });
     }
 

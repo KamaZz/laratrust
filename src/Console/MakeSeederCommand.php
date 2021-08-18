@@ -92,8 +92,8 @@ class MakeSeederCommand extends LaravelMakeSeederCommand
      */
     protected function replaceModelClassNames(string & $stub)
     {
-        $role = Config::get('laratrust.models.role', 'App\Role');
-        $this->replaceStubParameter($stub, 'roleConfiguredModelClass', '\\' . ltrim($role, '\\'));
+        $group = Config::get('laratrust.models.group', 'App\Group');
+        $this->replaceStubParameter($stub, 'groupConfiguredModelClass', '\\' . ltrim($group, '\\'));
 
         $permission = Config::get('laratrust.models.permission', 'App\Permission');
         $this->replaceStubParameter($stub, 'permissionConfiguredModelClass', '\\' . ltrim($permission, '\\'));
@@ -109,17 +109,17 @@ class MakeSeederCommand extends LaravelMakeSeederCommand
      */
     protected function replaceTableNames(string & $stub)
     {
-        $rolePermission = Config::get('laratrust.tables.permission_role');
-        $this->replaceStubParameter($stub, 'permission_roleConfiguredTableName', $rolePermission);
+        $groupPermission = Config::get('laratrust.tables.permission_group');
+        $this->replaceStubParameter($stub, 'permission_groupConfiguredTableName', $groupPermission);
 
         $permissionUser = Config::get('laratrust.tables.permission_user');
         $this->replaceStubParameter($stub, 'permission_userConfiguredTableName', $permissionUser);
 
-        $roleUser = Config::get('laratrust.tables.role_user');
-        $this->replaceStubParameter($stub, 'role_userConfiguredTableName', $roleUser);
+        $groupUser = Config::get('laratrust.tables.group_user');
+        $this->replaceStubParameter($stub, 'group_userConfiguredTableName', $groupUser);
 
-        $rolesTable = Config::get('laratrust.tables.roles');
-        $this->replaceStubParameter($stub, 'rolesTableName', $rolesTable);
+        $groupsTable = Config::get('laratrust.tables.groups');
+        $this->replaceStubParameter($stub, 'groupsTableName', $groupsTable);
 
         $permissionsTable = Config::get('laratrust.tables.permissions');
         $this->replaceStubParameter($stub, 'permissionsTableName', $permissionsTable);

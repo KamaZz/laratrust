@@ -35,9 +35,9 @@ class LaratrustRegistersBladeDirectives
      */
     protected function registerWithParenthesis()
     {
-        // Call to Laratrust::hasRole.
-        Blade::directive('role', function ($expression) {
-            return "<?php if (app('laratrust')->hasRole({$expression})) : ?>";
+        // Call to Laratrust::hasGroup.
+        Blade::directive('group', function ($expression) {
+            return "<?php if (app('laratrust')->hasGroup({$expression})) : ?>";
         });
 
         // Call to Laratrust::permission.
@@ -55,9 +55,9 @@ class LaratrustRegistersBladeDirectives
             return "<?php if (app('laratrust')->isAbleToAndOwns({$expression})) : ?>";
         });
 
-        // Call to Laratrust::hasRoleAndOwns.
-        Blade::directive('hasRoleAndOwns', function ($expression) {
-            return "<?php if (app('laratrust')->hasRoleAndOwns({$expression})) : ?>";
+        // Call to Laratrust::hasGroupAndOwns.
+        Blade::directive('hasGroupAndOwns', function ($expression) {
+            return "<?php if (app('laratrust')->hasGroupAndOwns({$expression})) : ?>";
         });
     }
 
@@ -68,9 +68,9 @@ class LaratrustRegistersBladeDirectives
      */
     protected function registerWithoutParenthesis()
     {
-        // Call to Laratrust::hasRole.
-        Blade::directive('role', function ($expression) {
-            return "<?php if (app('laratrust')->hasRole{$expression}) : ?>";
+        // Call to Laratrust::hasGroup.
+        Blade::directive('group', function ($expression) {
+            return "<?php if (app('laratrust')->hasGroup{$expression}) : ?>";
         });
 
         // Call to Laratrust::isAbleTo.
@@ -88,9 +88,9 @@ class LaratrustRegistersBladeDirectives
             return "<?php if (app('laratrust')->isAbleToAndOwns{$expression}) : ?>";
         });
 
-        // Call to Laratrust::hasRoleAndOwns.
-        Blade::directive('hasRoleAndOwns', function ($expression) {
-            return "<?php if (app('laratrust')->hasRoleAndOwns{$expression}) : ?>";
+        // Call to Laratrust::hasGroupAndOwns.
+        Blade::directive('hasGroupAndOwns', function ($expression) {
+            return "<?php if (app('laratrust')->hasGroupAndOwns{$expression}) : ?>";
         });
     }
 
@@ -101,8 +101,8 @@ class LaratrustRegistersBladeDirectives
      */
     protected function registerClosingDirectives()
     {
-        Blade::directive('endrole', function () {
-            return "<?php endif; // app('laratrust')->hasRole ?>";
+        Blade::directive('endgroup', function () {
+            return "<?php endif; // app('laratrust')->hasGroup ?>";
         });
 
         Blade::directive('endpermission', function () {
@@ -114,7 +114,7 @@ class LaratrustRegistersBladeDirectives
         });
 
         Blade::directive('endOwns', function () {
-            return "<?php endif; // app('laratrust')->hasRoleAndOwns or isAbleToAndOwns ?>";
+            return "<?php endif; // app('laratrust')->hasGroupAndOwns or isAbleToAndOwns ?>";
         });
     }
 }

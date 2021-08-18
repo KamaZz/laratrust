@@ -7,18 +7,18 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
-use Laratrust\Middleware\LaratrustRole;
+use Laratrust\Middleware\LaratrustGroup;
 
-class LaratrustRoleTest extends MiddlewareTest
+class LaratrustGroupTest extends MiddlewareTest
 {
-    public function testHandle_IsGuestWithMismatchingRole_ShouldAbort403()
+    public function testHandle_IsGuestWithMismatchingGroup_ShouldAbort403()
     {
         /*
         |------------------------------------------------------------
         | Set
         |------------------------------------------------------------
         */
-        $middleware = new LaratrustRole($this->guard);
+        $middleware = new LaratrustGroup($this->guard);
 
         /*
         |------------------------------------------------------------
@@ -40,7 +40,7 @@ class LaratrustRoleTest extends MiddlewareTest
         }, 'admin|user'));
     }
 
-    public function testHandle_IsLoggedInWithMismatchRole_ShouldAbort403()
+    public function testHandle_IsLoggedInWithMismatchGroup_ShouldAbort403()
     {
         /*
         |------------------------------------------------------------
@@ -48,7 +48,7 @@ class LaratrustRoleTest extends MiddlewareTest
         |------------------------------------------------------------
         */
         $user = m::mock('Laratrust\Tests\Models\User')->makePartial();
-        $middleware = new LaratrustRole($this->guard);
+        $middleware = new LaratrustGroup($this->guard);
 
         /*
         |------------------------------------------------------------
@@ -58,7 +58,7 @@ class LaratrustRoleTest extends MiddlewareTest
         $this->guard->shouldReceive('guest')->andReturn(false);
         Auth::shouldReceive('guard')->with(m::anyOf('web', 'api'))->andReturn($this->guard);
         $this->guard->shouldReceive('user')->andReturn($user);
-        $user->shouldReceive('hasRole')
+        $user->shouldReceive('hasGroup')
             ->with(
                 ['admin', 'user'],
                 m::anyOf(null, 'TeamA'),
@@ -93,7 +93,7 @@ class LaratrustRoleTest extends MiddlewareTest
         }, 'admin|user', 'TeamA', 'guard:api|require_all'));
     }
 
-    public function testHandle_IsLoggedInWithMatchingRole_ShouldNotAbort()
+    public function testHandle_IsLoggedInWithMatchingGroup_ShouldNotAbort()
     {
         /*
         |------------------------------------------------------------
@@ -101,7 +101,7 @@ class LaratrustRoleTest extends MiddlewareTest
         |------------------------------------------------------------
         */
         $user = m::mock('Laratrust\Tests\Models\User')->makePartial();
-        $middleware = new LaratrustRole($this->guard);
+        $middleware = new LaratrustGroup($this->guard);
 
         /*
         |------------------------------------------------------------
@@ -111,7 +111,7 @@ class LaratrustRoleTest extends MiddlewareTest
         $this->guard->shouldReceive('guest')->andReturn(false);
         Auth::shouldReceive('guard')->with(m::anyOf('web', 'api'))->andReturn($this->guard);
         $this->guard->shouldReceive('user')->andReturn($user);
-        $user->shouldReceive('hasRole')
+        $user->shouldReceive('hasGroup')
             ->with(
                 ['admin', 'user'],
                 m::anyOf(null, 'TeamA'),
@@ -143,7 +143,7 @@ class LaratrustRoleTest extends MiddlewareTest
         }, 'admin|user', 'TeamA', 'require_all|guard:api'));
     }
 
-    public function testHandle_IsLoggedInWithMismatchRole_ShouldRedirectWithoutError()
+    public function testHandle_IsLoggedInWithMismatchGroup_ShouldRedirectWithoutError()
     {
         /*
         |------------------------------------------------------------
@@ -153,7 +153,7 @@ class LaratrustRoleTest extends MiddlewareTest
         Session::start();
         Config::set('laratrust.middleware.handling', 'redirect');
         $user = m::mock('Laratrust\Tests\Models\User')->makePartial();
-        $middleware = new LaratrustRole($this->guard);
+        $middleware = new LaratrustGroup($this->guard);
 
 
         /*
@@ -164,7 +164,7 @@ class LaratrustRoleTest extends MiddlewareTest
         $this->guard->shouldReceive('guest')->andReturn(false);
         Auth::shouldReceive('guard')->with(m::anyOf('web', 'api'))->andReturn($this->guard);
         $this->guard->shouldReceive('user')->andReturn($user);
-        $user->shouldReceive('hasRole')
+        $user->shouldReceive('hasGroup')
             ->with(
                 ['admin', 'user'],
                 m::anyOf(null, 'TeamA'),
@@ -214,7 +214,7 @@ class LaratrustRoleTest extends MiddlewareTest
         $this->assertArrayNotHasKey('error', session()->all());
     }
 
-    public function testHandle_IsLoggedInWithMismatchRole_ShouldRedirectWithError()
+    public function testHandle_IsLoggedInWithMismatchGroup_ShouldRedirectWithError()
     {
         /*
         |------------------------------------------------------------
@@ -225,7 +225,7 @@ class LaratrustRoleTest extends MiddlewareTest
         Config::set('laratrust.middleware.handling', 'redirect');
         Config::set('laratrust.middleware.handlers.redirect.message.content', 'The message was flashed');
         $user = m::mock('Laratrust\Tests\Models\User')->makePartial();
-        $middleware = new LaratrustRole($this->guard);
+        $middleware = new LaratrustGroup($this->guard);
 
 
         /*
@@ -236,7 +236,7 @@ class LaratrustRoleTest extends MiddlewareTest
         $this->guard->shouldReceive('guest')->andReturn(false);
         Auth::shouldReceive('guard')->with(m::anyOf('web', 'api'))->andReturn($this->guard);
         $this->guard->shouldReceive('user')->andReturn($user);
-        $user->shouldReceive('hasRole')
+        $user->shouldReceive('hasGroup')
             ->with(
                 ['admin', 'user'],
                 m::anyOf(null, 'TeamA'),

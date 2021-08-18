@@ -1,6 +1,6 @@
 # Seeder
 
-Laratrust comes with a database seeder, this seeder helps you fill the permissions for each role depending on the module, and creates one user for each role.
+Laratrust comes with a database seeder, this seeder helps you fill the permissions for each group depending on the module, and creates one user for each group.
 
 ::: tip NOTE
 Laratrust now accepts multiple user models so the seeder is going to work with the first user model inside the user_models array.
@@ -29,14 +29,14 @@ $this->call(LaratrustSeeder::class);
 ```
 
 ::: tip NOTE
-If you **have not** run `php artisan vendor:publish --tag="laratrust"` you should run it in order to customize the roles, modules and permissions in each case.
+If you **have not** run `php artisan vendor:publish --tag="laratrust"` you should run it in order to customize the groups, modules and permissions in each case.
 :::
 
 Your `config/laratrust_seeder.php` file looks like this:
 
 ```php
 return [
-    'role_structure' => [
+    'group_structure' => [
         'superadministrator' => [
             'users' => 'c,r,u,d',
             'acl' => 'c,r,u,d',
@@ -59,18 +59,18 @@ return [
 ];
 ```
 
-To understand the `role_structure` you must know:
+To understand the `group_structure` you must know:
 
-* The first level is the roles.
+* The first level is the groups.
 * The second level is the modules.
 * The second level assignments are the permissions.
 
-With that in mind, you should arrange your roles, modules and permissions like this:
+With that in mind, you should arrange your groups, modules and permissions like this:
 
 ```php
 return [
-    'role_structure' => [
-        'role' => [
+    'group_structure' => [
+        'group' => [
             'module' => 'permissions',
         ],
     ]

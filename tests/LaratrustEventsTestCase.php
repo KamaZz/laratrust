@@ -27,7 +27,7 @@ class LaratrustEventsTestCase extends LaratrustTestCase
     {
         $method = \Illuminate\Support\Str::camel(str_replace('.', ' ', $event));
 
-        $modelClass::{$method}(function ($user, $roleId) {
+        $modelClass::{$method}(function ($user, $groupId) {
             return 'test';
         });
     }

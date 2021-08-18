@@ -2,9 +2,9 @@
 
 namespace DummyNamespace;
 
-use Laratrust\Models\LaratrustRole;
+use Laratrust\Models\LaratrustGroup;
 
-class DummyClass extends LaratrustRole
+class DummyClass extends LaratrustGroup
 {
     public $guarded = [];
 }

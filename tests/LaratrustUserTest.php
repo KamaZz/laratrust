@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 use Laratrust\Tests\LaratrustTestCase;
 use Laratrust\Tests\Models\OwnableObject;
 use Laratrust\Tests\Models\Permission;
-use Laratrust\Tests\Models\Role;
+use Laratrust\Tests\Models\Group;
 use Laratrust\Tests\Models\Team;
 use Laratrust\Tests\Models\User;
 use Laratrust\Traits\LaratrustUserTrait;
@@ -30,7 +30,7 @@ class LaratrustUserTest extends LaratrustTestCase
         $this->app['config']->set('laratrust.teams.enabled', true);
     }
 
-    public function testRolesRelationship()
+    public function testGroupsRelationship()
     {
         /*
         |------------------------------------------------------------
@@ -40,13 +40,13 @@ class LaratrustUserTest extends LaratrustTestCase
         $this->app['config']->set('laratrust.teams.enabled', false);
         $this->assertInstanceOf(
             'Illuminate\Database\Eloquent\Relations\MorphToMany',
-            $this->user->roles()
+            $this->user->groups()
         );
 
         $this->app['config']->set('laratrust.teams.enabled', true);
         $this->assertInstanceOf(
             'Illuminate\Database\Eloquent\Relations\MorphToMany',
-            $this->user->roles()
+            $this->user->groups()
         );
     }
 
@@ -70,7 +70,7 @@ class LaratrustUserTest extends LaratrustTestCase
         );
     }
 
-    public function testRolesTeams()
+    public function testGroupsTeams()
     {
         /*
         |------------------------------------------------------------
@@ -78,12 +78,12 @@ class LaratrustUserTest extends LaratrustTestCase
         |------------------------------------------------------------
         */
         $this->app['config']->set('laratrust.teams.enabled', false);
-        $this->assertNull($this->user->rolesTeams());
+        $this->assertNull($this->user->groupsTeams());
 
         $this->app['config']->set('laratrust.teams.enabled', true);
         $this->assertInstanceOf(
             'Illuminate\Database\Eloquent\Relations\MorphToMany',
-            $this->user->rolesTeams()
+            $this->user->groupsTeams()
         );
     }
 
@@ -140,14 +140,14 @@ class LaratrustUserTest extends LaratrustTestCase
             Permission::create(['name' => 'permission_c'])
         ], $teamA);
 
-        $this->user->attachRoles([
-            Role::create(['name' => 'role_a']),
-            Role::create(['name' => 'role_b']),
-            Role::create(['name' => 'role_c'])
+        $this->user->attachGroups([
+            Group::create(['name' => 'group_a']),
+            Group::create(['name' => 'group_b']),
+            Group::create(['name' => 'group_c'])
         ], $teamB);
 
-        $this->user->attachRoles([
-            Role::create(['name' => 'role_d']),
+        $this->user->attachGroups([
+            Group::create(['name' => 'group_d']),
         ], $teamA);
 
 
@@ -227,14 +227,14 @@ class LaratrustUserTest extends LaratrustTestCase
         $this->assertTrue($this->user->isAbleToManageUser());
     }
 
-    public function testAttachRole()
+    public function testAttachGroup()
     {
         /*
         |------------------------------------------------------------
         | Set
         |------------------------------------------------------------
         */
-        $role = Role::create(['name' => 'role_a']);
+        $group = Group::create(['name' => 'group_a']);
         $team = Team::create(['name' => 'team_a']);
 
         /*
@@ -242,42 +242,42 @@ class LaratrustUserTest extends LaratrustTestCase
         | Assertion
         |------------------------------------------------------------
         */
-        // Can attach role by passing an object
-        $this->assertWasAttached('role', $this->user->attachRole($role));
-        // Can attach role by passing an id
-        $this->assertWasAttached('role', $this->user->attachRole($role->id));
-        // Can attach role by passing an array with 'id' => $id
-        $this->assertWasAttached('role', $this->user->attachRole($role->toArray()));
-        // Can attach role by passing the role name
-        $this->assertWasAttached('role', $this->user->attachRole('role_a'));
-        // Can attach role by passing the role and team
-        $this->assertWasAttached('role', $this->user->attachRole($role, $team));
-        // Can attach role by passing the role and team id
-        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->attachRole($role, $team->id));
-        $this->assertEquals($team->id, $this->user->roles()->first()->pivot->team_id);
-        $this->user->roles()->sync([]);
-        // Can attach role by passing the role and team name
-        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->attachRole($role, 'team_a'));
-        $this->assertEquals($team->id, $this->user->roles()->first()->pivot->team_id);
-        $this->user->roles()->sync([]);
+        // Can attach group by passing an object
+        $this->assertWasAttached('group', $this->user->attachGroup($group));
+        // Can attach group by passing an id
+        $this->assertWasAttached('group', $this->user->attachGroup($group->id));
+        // Can attach group by passing an array with 'id' => $id
+        $this->assertWasAttached('group', $this->user->attachGroup($group->toArray()));
+        // Can attach group by passing the group name
+        $this->assertWasAttached('group', $this->user->attachGroup('group_a'));
+        // Can attach group by passing the group and team
+        $this->assertWasAttached('group', $this->user->attachGroup($group, $team));
+        // Can attach group by passing the group and team id
+        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->attachGroup($group, $team->id));
+        $this->assertEquals($team->id, $this->user->groups()->first()->pivot->team_id);
+        $this->user->groups()->sync([]);
+        // Can attach group by passing the group and team name
+        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->attachGroup($group, 'team_a'));
+        $this->assertEquals($team->id, $this->user->groups()->first()->pivot->team_id);
+        $this->user->groups()->sync([]);
 
         $this->app['config']->set('laratrust.teams.enabled', false);
-        $this->assertWasAttached('role', $this->user->attachRole($role));
+        $this->assertWasAttached('group', $this->user->attachGroup($group));
 
-        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->attachRole($role, 'team_a'));
-        $this->assertNull($this->user->roles()->first()->pivot->team_id);
-        $this->user->roles()->sync([]);
+        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->attachGroup($group, 'team_a'));
+        $this->assertNull($this->user->groups()->first()->pivot->team_id);
+        $this->user->groups()->sync([]);
     }
 
-    public function testDetachRole()
+    public function testDetachGroup()
     {
         /*
         |------------------------------------------------------------
         | Set
         |------------------------------------------------------------
         */
-        $role = Role::create(['name' => 'role_a']);
-        $this->user->roles()->attach($role->id);
+        $group = Group::create(['name' => 'group_a']);
+        $this->user->groups()->attach($group->id);
         $team = Team::create(['name' => 'team_a']);
 
         /*
@@ -285,33 +285,33 @@ class LaratrustUserTest extends LaratrustTestCase
         | Assertion
         |------------------------------------------------------------
         */
-        // Can attach role by passing an object
-        $this->assertWasDetached('role', $this->user->detachRole($role), $role);
-        // Can detach role by passing an id
-        $this->assertWasDetached('role', $this->user->detachRole($role->id), $role);
-        // Can detach role by passing an array with 'id' => $id
-        $this->assertWasDetached('role', $this->user->detachRole($role->toArray()), $role);
-        // Can detach role by passing the role name
-        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->detachRole('role_a'));
-        $this->assertEquals(0, $this->user->roles()->count());
-        $this->user->roles()->attach($role->id, ['team_id' => $team->id]);
-        // Can detach role by passing the role and team
-        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->detachRole($role, $team));
-        $this->assertEquals(0, $this->user->roles()->count());
-        $this->user->roles()->attach($role->id, ['team_id' => $team->id]);
-        // Can detach role by passing the role and team id
-        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->detachRole($role, $team->id));
-        $this->assertEquals(0, $this->user->roles()->count());
-        $this->user->roles()->attach($role->id, ['team_id' => $team->id]);
-        // Can detach role by passing the role and team name
-        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->detachRole($role, 'team_a'));
+        // Can attach group by passing an object
+        $this->assertWasDetached('group', $this->user->detachGroup($group), $group);
+        // Can detach group by passing an id
+        $this->assertWasDetached('group', $this->user->detachGroup($group->id), $group);
+        // Can detach group by passing an array with 'id' => $id
+        $this->assertWasDetached('group', $this->user->detachGroup($group->toArray()), $group);
+        // Can detach group by passing the group name
+        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->detachGroup('group_a'));
+        $this->assertEquals(0, $this->user->groups()->count());
+        $this->user->groups()->attach($group->id, ['team_id' => $team->id]);
+        // Can detach group by passing the group and team
+        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->detachGroup($group, $team));
+        $this->assertEquals(0, $this->user->groups()->count());
+        $this->user->groups()->attach($group->id, ['team_id' => $team->id]);
+        // Can detach group by passing the group and team id
+        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->detachGroup($group, $team->id));
+        $this->assertEquals(0, $this->user->groups()->count());
+        $this->user->groups()->attach($group->id, ['team_id' => $team->id]);
+        // Can detach group by passing the group and team name
+        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->detachGroup($group, 'team_a'));
 
         $this->app['config']->set('laratrust.teams.enabled', false);
-        $this->assertWasDetached('role', $this->user->detachRole($role), $role);
-        $this->assertWasDetached('role', $this->user->detachRole($role, 'TeamA'), $role);
+        $this->assertWasDetached('group', $this->user->detachGroup($group), $group);
+        $this->assertWasDetached('group', $this->user->detachGroup($group, 'TeamA'), $group);
     }
 
-    public function testAttachRoles()
+    public function testAttachGroups()
     {
         /*
         |------------------------------------------------------------
@@ -325,18 +325,18 @@ class LaratrustUserTest extends LaratrustTestCase
         | Expectation
         |------------------------------------------------------------
         */
-        $user->shouldReceive('attachRole')->with(m::anyOf(1, 2, 3), m::anyOf(null, 'TeamA'))->times(6);
+        $user->shouldReceive('attachGroup')->with(m::anyOf(1, 2, 3), m::anyOf(null, 'TeamA'))->times(6);
 
         /*
         |------------------------------------------------------------
         | Assertion
         |------------------------------------------------------------
         */
-        $this->assertInstanceOf('Laratrust\Tests\Models\User', $user->attachRoles([1, 2, 3]));
-        $this->assertInstanceOf('Laratrust\Tests\Models\User', $user->attachRoles([1, 2, 3], 'TeamA'));
+        $this->assertInstanceOf('Laratrust\Tests\Models\User', $user->attachGroups([1, 2, 3]));
+        $this->assertInstanceOf('Laratrust\Tests\Models\User', $user->attachGroups([1, 2, 3], 'TeamA'));
     }
 
-    public function testDetachRoles()
+    public function testDetachGroups()
     {
         /*
         |------------------------------------------------------------
@@ -350,20 +350,20 @@ class LaratrustUserTest extends LaratrustTestCase
         | Expectation
         |------------------------------------------------------------
         */
-        $user->shouldReceive('roles->get')->andReturn([1, 2, 3])->once();
-        $user->shouldReceive('detachRole')->with(m::anyOf(1, 2, 3), m::anyOf(null, 'TeamA'))->times(9);
+        $user->shouldReceive('groups->get')->andReturn([1, 2, 3])->once();
+        $user->shouldReceive('detachGroup')->with(m::anyOf(1, 2, 3), m::anyOf(null, 'TeamA'))->times(9);
 
         /*
         |------------------------------------------------------------
         | Assertion
         |------------------------------------------------------------
         */
-        $this->assertInstanceOf('Laratrust\Tests\Models\User', $user->detachRoles([1, 2, 3]));
-        $this->assertInstanceOf('Laratrust\Tests\Models\User', $user->detachRoles([]));
-        $this->assertInstanceOf('Laratrust\Tests\Models\User', $user->detachRoles([1, 2, 3], 'TeamA'));
+        $this->assertInstanceOf('Laratrust\Tests\Models\User', $user->detachGroups([1, 2, 3]));
+        $this->assertInstanceOf('Laratrust\Tests\Models\User', $user->detachGroups([]));
+        $this->assertInstanceOf('Laratrust\Tests\Models\User', $user->detachGroups([1, 2, 3], 'TeamA'));
     }
 
-    public function testSyncRoles()
+    public function testSyncGroups()
     {
         /*
         |------------------------------------------------------------
@@ -371,33 +371,33 @@ class LaratrustUserTest extends LaratrustTestCase
         |------------------------------------------------------------
         */
         $team = Team::create(['name' => 'team_a']);
-        $roles = [
-            Role::create(['name' => 'role_a'])->id,
-            Role::create(['name' => 'role_b']),
+        $groups = [
+            Group::create(['name' => 'group_a'])->id,
+            Group::create(['name' => 'group_b']),
         ];
-        $this->user->attachRole(Role::create(['name' => 'role_c']));
+        $this->user->attachGroup(Group::create(['name' => 'group_c']));
 
         /*
         |------------------------------------------------------------
         | Assertion
         |------------------------------------------------------------
         */
-        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->syncRoles($roles));
-        $this->assertEquals(2, $this->user->roles()->count());
-        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->syncRoles($roles, 'team_a'));
-        $this->assertEquals(4, $this->user->roles()->count());
-        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->syncRoles(['role_a']));
-        $this->assertEquals(3, $this->user->roles()->count());
+        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->syncGroups($groups));
+        $this->assertEquals(2, $this->user->groups()->count());
+        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->syncGroups($groups, 'team_a'));
+        $this->assertEquals(4, $this->user->groups()->count());
+        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->syncGroups(['group_a']));
+        $this->assertEquals(3, $this->user->groups()->count());
 
         $this->app['config']->set('laratrust.teams.enabled', false);
-        $this->user->syncRoles([]);
-        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->syncRoles($roles, null));
-        $this->assertEquals(2, $this->user->roles()->count());
-        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->syncRoles($roles, 'team_a', false));
-        $this->assertEquals(2, $this->user->roles()->count());
+        $this->user->syncGroups([]);
+        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->syncGroups($groups, null));
+        $this->assertEquals(2, $this->user->groups()->count());
+        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->syncGroups($groups, 'team_a', false));
+        $this->assertEquals(2, $this->user->groups()->count());
     }
 
-    public function testSyncRolesWithoutDetaching()
+    public function testSyncGroupsWithoutDetaching()
     {
         /*
         |------------------------------------------------------------
@@ -405,28 +405,28 @@ class LaratrustUserTest extends LaratrustTestCase
         |------------------------------------------------------------
         */
         $team = Team::create(['name' => 'team_a']);
-        $roles = [
-            Role::create(['name' => 'role_a'])->id,
-            Role::create(['name' => 'role_b'])->id,
+        $groups = [
+            Group::create(['name' => 'group_a'])->id,
+            Group::create(['name' => 'group_b'])->id,
         ];
-        $this->user->attachRole(Role::create(['name' => 'role_c']));
+        $this->user->attachGroup(Group::create(['name' => 'group_c']));
 
         /*
         |------------------------------------------------------------
         | Assertion
         |------------------------------------------------------------
         */
-        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->syncRolesWithoutDetaching($roles));
-        $this->assertEquals(3, $this->user->roles()->count());
-        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->syncRolesWithoutDetaching($roles, 'team_a'));
-        $this->assertEquals(5, $this->user->roles()->count());
+        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->syncGroupsWithoutDetaching($groups));
+        $this->assertEquals(3, $this->user->groups()->count());
+        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->syncGroupsWithoutDetaching($groups, 'team_a'));
+        $this->assertEquals(5, $this->user->groups()->count());
 
         $this->app['config']->set('laratrust.teams.enabled', false);
-        $this->user->detachRoles([1]);
-        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->syncRolesWithoutDetaching($roles, null));
-        $this->assertEquals(4, $this->user->roles()->count());
-        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->syncRolesWithoutDetaching($roles, 'team_a', false));
-        $this->assertEquals(4, $this->user->roles()->count());
+        $this->user->detachGroups([1]);
+        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->syncGroupsWithoutDetaching($groups, null));
+        $this->assertEquals(4, $this->user->groups()->count());
+        $this->assertInstanceOf('Laratrust\Tests\Models\User', $this->user->syncGroupsWithoutDetaching($groups, 'team_a', false));
+        $this->assertEquals(4, $this->user->groups()->count());
     }
 
     public function testAttachPermission()
@@ -681,7 +681,7 @@ class LaratrustUserTest extends LaratrustTestCase
         $this->assertFalse($user->owns($post2, 'UserId'));
     }
 
-    public function testUserHasRoleAndOwnsaPostModel()
+    public function testUserHasGroupAndOwnsaPostModel()
     {
         /*
         |------------------------------------------------------------
@@ -697,11 +697,11 @@ class LaratrustUserTest extends LaratrustTestCase
         | Expectation
         |------------------------------------------------------------
         */
-        $user->shouldReceive('hasRole')->with('editor', null, false)->andReturn(true)->once();
+        $user->shouldReceive('hasGroup')->with('editor', null, false)->andReturn(true)->once();
         $user->shouldReceive('owns')->with($post, null)->andReturn(true)->once();
-        $user->shouldReceive('hasRole')->with('regular-user', null, false)->andReturn(false)->once();
-        $user->shouldReceive('hasRole')->with('administrator', null, true)->andReturn(true)->once();
-        $user->shouldReceive('hasRole')->with('team-member', $team, true)->andReturn(false)->once();
+        $user->shouldReceive('hasGroup')->with('regular-user', null, false)->andReturn(false)->once();
+        $user->shouldReceive('hasGroup')->with('administrator', null, true)->andReturn(true)->once();
+        $user->shouldReceive('hasGroup')->with('team-member', $team, true)->andReturn(false)->once();
         $user->shouldReceive('owns')->with($post, 'UserID')->andReturn(false)->once();
 
         /*
@@ -709,12 +709,12 @@ class LaratrustUserTest extends LaratrustTestCase
         | Assertion
         |------------------------------------------------------------
         */
-        $this->assertTrue($user->hasRoleAndOwns('editor', $post));
-        $this->assertFalse($user->hasRoleAndOwns('regular-user', $post));
-        $this->assertFalse($user->hasRoleAndOwns('administrator', $post, [
+        $this->assertTrue($user->hasGroupAndOwns('editor', $post));
+        $this->assertFalse($user->hasGroupAndOwns('regular-user', $post));
+        $this->assertFalse($user->hasGroupAndOwns('administrator', $post, [
             'requireAll' => true, 'foreignKeyName' => 'UserID'
         ]));
-        $this->assertFalse($user->hasRoleAndOwns('team-member', $post, [
+        $this->assertFalse($user->hasGroupAndOwns('team-member', $post, [
             'requireAll' => true,
             'foreignKeyName' => 'UserID',
             'team' => $team
@@ -768,16 +768,16 @@ class LaratrustUserTest extends LaratrustTestCase
         | Set
         |------------------------------------------------------------
         */
-        $roleA = Role::create(['name' => 'role_a']);
-        $roleB = Role::create(['name' => 'role_b']);
+        $groupA = Group::create(['name' => 'group_a']);
+        $groupB = Group::create(['name' => 'group_b']);
         $permissionA = Permission::create(['name' => 'permission_a']);
         $permissionB = Permission::create(['name' => 'permission_b']);
         $permissionC = Permission::create(['name' => 'permission_c']);
 
-        $roleA->attachPermissions([$permissionA, $permissionB]);
-        $roleB->attachPermissions([$permissionB, $permissionC]);
+        $groupA->attachPermissions([$permissionA, $permissionB]);
+        $groupB->attachPermissions([$permissionB, $permissionC]);
         $this->user->attachPermissions([$permissionB, $permissionC]);
-        $this->user->attachRoles([$roleA, $roleB]);
+        $this->user->attachGroups([$groupA, $groupB]);
 
         /*
         |------------------------------------------------------------
@@ -802,9 +802,9 @@ class LaratrustUserTest extends LaratrustTestCase
         | Set
         |------------------------------------------------------------
         */
-        $roleA = Role::create(['name' => 'role_a']);
-        $roleB = Role::create(['name' => 'role_b']);
-        $roleC = Role::create(['name' => 'role_c']);
+        $groupA = Group::create(['name' => 'group_a']);
+        $groupB = Group::create(['name' => 'group_b']);
+        $groupC = Group::create(['name' => 'group_c']);
         $permissionA = Permission::create(['name' => 'permission_a']);
         $permissionB = Permission::create(['name' => 'permission_b']);
         $permissionC = Permission::create(['name' => 'permission_c']);
@@ -813,15 +813,15 @@ class LaratrustUserTest extends LaratrustTestCase
         $teamA = Team::create(['name' => 'team_a']);
         $teamB = Team::create(['name' => 'team_b']);
 
-        $roleA->attachPermissions([$permissionA, $permissionB]);
-        $roleB->attachPermissions([$permissionB, $permissionC]);
-        $roleC->attachPermissions([$permissionD]);
+        $groupA->attachPermissions([$permissionA, $permissionB]);
+        $groupB->attachPermissions([$permissionB, $permissionC]);
+        $groupC->attachPermissions([$permissionD]);
 
         $this->user->attachPermissions([$permissionB, $permissionC]);
         $this->user->attachPermissions([$permissionC], $teamA);
-        $this->user->attachRole($roleA);
-        $this->user->attachRole($roleB, $teamA);
-        $this->user->attachRole($roleC, $teamB);
+        $this->user->attachGroup($groupA);
+        $this->user->attachGroup($groupB, $teamA);
+        $this->user->attachGroup($groupC, $teamB);
 
         /*
         |------------------------------------------------------------

@@ -9,21 +9,21 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 
-class RolesController
+class GroupsController
 {
-    protected $rolesModel;
+    protected $groupsModel;
     protected $permissionModel;
 
     public function __construct()
     {
-        $this->rolesModel = Config::get('laratrust.models.role');
+        $this->groupsModel = Config::get('laratrust.models.group');
         $this->permissionModel = Config::get('laratrust.models.permission');
     }
 
     public function index()
     {
-        return View::make('laratrust::panel.roles.index', [
-            'roles' => $this->rolesModel::withCount('permissions')
+        return View::make('laratrust::panel.groups.index', [
+            'groups' => $this->groupsModel::withCount('permissions')
                 ->simplePaginate(10),
         ]);
     }
@@ -33,48 +33,48 @@ class RolesController
         return View::make('laratrust::panel.edit', [
             'model' => null,
             'permissions' => $this->permissionModel::all(['id', 'name']),
-            'type' => 'role',
+            'type' => 'group',
         ]);
     }
 
     public function show(Request $request, $id)
     {
-        $role = $this->rolesModel::query()
+        $group = $this->groupsModel::query()
             ->with('permissions:id,name,display_name')
             ->findOrFail($id);
 
-        return View::make('laratrust::panel.roles.show', ['role' => $role]);
+        return View::make('laratrust::panel.groups.show', ['group' => $group]);
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string|unique:roles,name',
+            'name' => 'required|string|unique:groups,name',
             'display_name' => 'nullable|string',
             'description' => 'nullable|string',
         ]);
 
-        $role = $this->rolesModel::create($data);
-        $role->syncPermissions($request->get('permissions') ?? []);
+        $group = $this->groupsModel::create($data);
+        $group->syncPermissions($request->get('permissions') ?? []);
 
-        Session::flash('laratrust-success', 'Role created successfully');
-        return redirect(route('laratrust.roles.index'));
+        Session::flash('laratrust-success', 'Group created successfully');
+        return redirect(route('laratrust.groups.index'));
     }
 
     public function edit($id)
     {
-        $role = $this->rolesModel::query()
+        $group = $this->groupsModel::query()
             ->with('permissions:id')
             ->findOrFail($id);
 
-        if (!Helper::roleIsEditable($role)) {
-            Session::flash('laratrust-error', 'The role is not editable');
+        if (!Helper::groupIsEditable($group)) {
+            Session::flash('laratrust-error', 'The group is not editable');
             return redirect()->back();
         }
 
         $permissions = $this->permissionModel::all(['id', 'name', 'display_name'])
-            ->map(function ($permission) use ($role) {
-                $permission->assigned = $role->permissions
+            ->map(function ($permission) use ($group) {
+                $permission->assigned = $group->permissions
                     ->pluck('id')
                     ->contains($permission->id);
 
@@ -82,18 +82,18 @@ class RolesController
             });
 
         return View::make('laratrust::panel.edit', [
-            'model' => $role,
+            'model' => $group,
             'permissions' => $permissions,
-            'type' => 'role',
+            'type' => 'group',
         ]);
     }
 
     public function update(Request $request, $id)
     {
-        $role = $this->rolesModel::findOrFail($id);
+        $group = $this->groupsModel::findOrFail($id);
 
-        if (!Helper::roleIsEditable($role)) {
-            Session::flash('laratrust-error', 'The role is not editable');
+        if (!Helper::groupIsEditable($group)) {
+            Session::flash('laratrust-error', 'The group is not editable');
             return redirect()->back();
         }
 
@@ -102,32 +102,32 @@ class RolesController
             'description' => 'nullable|string',
         ]);
 
-        $role->update($data);
-        $role->syncPermissions($request->get('permissions') ?? []);
+        $group->update($data);
+        $group->syncPermissions($request->get('permissions') ?? []);
 
-        Session::flash('laratrust-success', 'Role updated successfully');
-        return redirect(route('laratrust.roles.index'));
+        Session::flash('laratrust-success', 'Group updated successfully');
+        return redirect(route('laratrust.groups.index'));
     }
 
     public function destroy($id)
     {
-        $usersAssignedToRole = DB::table(Config::get('laratrust.tables.role_user'))
-            ->where(Config::get('laratrust.foreign_keys.role'), $id)
+        $usersAssignedToGroup = DB::table(Config::get('laratrust.tables.group_user'))
+            ->where(Config::get('laratrust.foreign_keys.group'), $id)
             ->count();
-        $role = $this->rolesModel::findOrFail($id);
+        $group = $this->groupsModel::findOrFail($id);
 
-        if (!Helper::roleIsDeletable($role)) {
-            Session::flash('laratrust-error', 'The role is not deletable');
+        if (!Helper::groupIsDeletable($group)) {
+            Session::flash('laratrust-error', 'The group is not deletable');
             return redirect()->back();
         }
 
-        if ($usersAssignedToRole > 0) {
-            Session::flash('laratrust-warning', 'Role is attached to one or more users. It can not be deleted');
+        if ($usersAssignedToGroup > 0) {
+            Session::flash('laratrust-warning', 'Group is attached to one or more users. It can not be deleted');
         } else {
-            Session::flash('laratrust-success', 'Role deleted successfully');
-            $this->rolesModel::destroy($id);
+            Session::flash('laratrust-success', 'Group deleted successfully');
+            $this->groupsModel::destroy($id);
         }
 
-        return redirect(route('laratrust.roles.index'));
+        return redirect(route('laratrust.groups.index'));
     }
 }

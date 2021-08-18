@@ -15,7 +15,7 @@ class User extends Model
 }
 ```
 
-This will enable the relation with `Role` and `Permission`, and add the following methods `roles()`, `hasRole($name)`, `hasPermission($permission)`, `isAbleTo($permission)`, `can($permission)`, `ability($roles, $permissions, $options)`, and `rolesTeams()` within your `User` model.
+This will enable the relation with `Group` and `Permission`, and add the following methods `groups()`, `hasGroup($name)`, `hasPermission($permission)`, `isAbleTo($permission)`, `can($permission)`, `ability($groups, $permissions, $options)`, and `groupsTeams()` within your `User` model.
 
 Do not forget to dump composer autoload
 

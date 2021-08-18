@@ -45,7 +45,7 @@ class Helper
      */
     public static function isValidRelationship($relationship)
     {
-        return in_array($relationship, ['roles', 'permissions']);
+        return in_array($relationship, ['groups', 'permissions']);
     }
 
     /**
@@ -103,13 +103,13 @@ class Helper
     }
 
     /**
-     * Check if a role or permission is attach to the user in a same team.
+     * Check if a group or permission is attach to the user in a same team.
      *
-     * @param  mixed  $rolePermission
+     * @param  mixed  $groupPermission
      * @param  \Illuminate\Database\Eloquent\Model  $team
      * @return boolean
      */
-    public static function isInSameTeam($rolePermission, $team)
+    public static function isInSameTeam($groupPermission, $team)
     {
         if (
             !Config::get('laratrust.teams.enabled')
@@ -120,7 +120,7 @@ class Helper
 
         $teamForeignKey = static::teamForeignKey();
 
-        return $rolePermission['pivot'][$teamForeignKey] == $team;
+        return $groupPermission['pivot'][$teamForeignKey] == $team;
     }
 
     /**
@@ -202,50 +202,50 @@ class Helper
     }
 
     /**
-     * Check if a role is editable in the admin panel.
+     * Check if a group is editable in the admin panel.
      *
-     * @param string|\Laratrust\Models\LaratrustRole $role
+     * @param string|\Laratrust\Models\LaratrustGroup $group
      * @return bool
      */
-    public static function roleIsEditable($role)
+    public static function groupIsEditable($group)
     {
-        $roleName = is_string($role) ? $role : $role->name;
+        $groupName = is_string($group) ? $group : $group->name;
 
         return ! in_array(
-            $roleName,
-            Config::get('laratrust.panel.roles_restrictions.not_editable') ?? []
+            $groupName,
+            Config::get('laratrust.panel.groups_restrictions.not_editable') ?? []
         );
     }
 
     /**
-     * Check if a role is deletable in the admin panel.
+     * Check if a group is deletable in the admin panel.
      *
-     * @param string|\Laratrust\Models\LaratrustRole $role
+     * @param string|\Laratrust\Models\LaratrustGroup $group
      * @return bool
      */
-    public static function roleIsDeletable($role)
+    public static function groupIsDeletable($group)
     {
-        $roleName = is_string($role) ? $role : $role->name;
+        $groupName = is_string($group) ? $group : $group->name;
 
         return ! in_array(
-            $roleName,
-            Config::get('laratrust.panel.roles_restrictions.not_deletable') ?? []
+            $groupName,
+            Config::get('laratrust.panel.groups_restrictions.not_deletable') ?? []
         );
     }
 
     /**
-     * Check if a role is removable in the admin panel.
+     * Check if a group is removable in the admin panel.
      *
-     * @param string|\Laratrust\Models\LaratrustRole $role
+     * @param string|\Laratrust\Models\LaratrustGroup $group
      * @return bool
      */
-    public static function roleIsRemovable($role)
+    public static function groupIsRemovable($group)
     {
-        $roleName = is_string($role) ? $role : $role->name;
+        $groupName = is_string($group) ? $group : $group->name;
 
         return ! in_array(
-            $roleName,
-            Config::get('laratrust.panel.roles_restrictions.not_removable') ?? []
+            $groupName,
+            Config::get('laratrust.panel.groups_restrictions.not_removable') ?? []
         );
     }
 }

@@ -2,10 +2,10 @@
 
 namespace Laratrust\Contracts;
 
-interface LaratrustRoleInterface
+interface LaratrustGroupInterface
 {
     /**
-     * Morph by Many relationship between the role and the one of the possible user models.
+     * Morph by Many relationship between the group and the one of the possible user models.
      *
      * @param  string  $relationship
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
@@ -20,7 +20,7 @@ interface LaratrustRoleInterface
     public function permissions();
 
     /**
-     * Checks if the role has a permission by its name.
+     * Checks if the group has a permission by its name.
      *
      * @param  string|array  $permission       Permission name or array of permission names.
      * @param  bool  $requireAll       All permissions in the array are required.
@@ -37,7 +37,7 @@ interface LaratrustRoleInterface
     public function syncPermissions($permissions);
 
     /**
-     * Attach permission to current role.
+     * Attach permission to current group.
      *
      * @param  object|array  $permission
      * @return void
@@ -45,7 +45,7 @@ interface LaratrustRoleInterface
     public function attachPermission($permission);
 
     /**
-     * Detach permission from current role.
+     * Detach permission from current group.
      *
      * @param  object|array  $permission
      * @return void
@@ -53,7 +53,7 @@ interface LaratrustRoleInterface
     public function detachPermission($permission);
 
     /**
-     * Attach multiple permissions to current role.
+     * Attach multiple permissions to current group.
      *
      * @param  mixed  $permissions
      * @return void
@@ -61,7 +61,7 @@ interface LaratrustRoleInterface
     public function attachPermissions($permissions);
 
     /**
-     * Detach multiple permissions from current role
+     * Detach multiple permissions from current group
      *
      * @param  mixed  $permissions
      * @return void

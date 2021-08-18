@@ -1,23 +1,23 @@
-# Role
+# Group
 
-Create a Role model inside `app/Role.php` using the following example:
+Create a Group model inside `app/Group.php` using the following example:
 
 ```php
 <?php
 
 namespace App;
 
-use Laratrust\Models\LaratrustRole;
+use Laratrust\Models\LaratrustGroup;
 
-class Role extends LaratrustRole
+class Group extends LaratrustGroup
 {
 }
 ```
 
-The `Role` model has three main attributes:
+The `Group` model has three main attributes:
 
-* `name` — Unique name for the Role, used for looking up role information in the application layer. For example: "admin", "owner", "employee".
-* `display_name` — Human readable name for the Role. Not necessarily unique and optional. For example: "User Administrator", "Project Owner", "Widget  Co. Employee".
-* `description` — A more detailed explanation of what the Role does. Also, optional.
+* `name` — Unique name for the Group, used for looking up group information in the application layer. For example: "admin", "owner", "employee".
+* `display_name` — Human readable name for the Group. Not necessarily unique and optional. For example: "User Administrator", "Project Owner", "Widget  Co. Employee".
+* `description` — A more detailed explanation of what the Group does. Also, optional.
 
 Both `display_name` and `description` are optional; their fields are nullable in the database.

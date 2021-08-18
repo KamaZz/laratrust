@@ -1,20 +1,20 @@
 <?php
 
-namespace Laratrust\Checkers\Role;
+namespace Laratrust\Checkers\Group;
 
 use Laratrust\Helper;
 use Illuminate\Support\Facades\Cache;
 
-class LaratrustRoleQueryChecker extends LaratrustRoleChecker
+class LaratrustGroupQueryChecker extends LaratrustGroupChecker
 {
     /**
-     * Checks if the role has a permission by its name.
+     * Checks if the group has a permission by its name.
      *
      * @param  string|array  $permission       Permission name or array of permission names.
      * @param  bool  $requireAll       All permissions in the array are required.
      * @return bool
      */
-    public function currentRoleHasPermission($permission, $requireAll = false)
+    public function currentGroupHasPermission($permission, $requireAll = false)
     {
         if (empty($permission)) {
             return true;
@@ -26,7 +26,7 @@ class LaratrustRoleQueryChecker extends LaratrustRoleChecker
         list($permissionsWildcard, $permissionsNoWildcard) =
             Helper::getPermissionWithAndWithoutWildcards($permissionsNames);
 
-        $permissionsCount = $this->role->permissions()
+        $permissionsCount = $this->group->permissions()
             ->whereIn('name', $permissionsNoWildcard)
             ->when($permissionsWildcard, function ($query) use ($permissionsWildcard) {
                 foreach ($permissionsWildcard as $permission) {
@@ -43,11 +43,11 @@ class LaratrustRoleQueryChecker extends LaratrustRoleChecker
     }
 
     /**
-     * Flush the role's cache.
+     * Flush the group's cache.
      *
      * @return void
      */
-    public function currentRoleFlushCache()
+    public function currentGroupFlushCache()
     {
     }
 }

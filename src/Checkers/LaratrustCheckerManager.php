@@ -3,15 +3,15 @@
 namespace Laratrust\Checkers;
 
 use Illuminate\Support\Facades\Config;
-use Laratrust\Checkers\Role\LaratrustRoleQueryChecker;
+use Laratrust\Checkers\Group\LaratrustGroupQueryChecker;
 use Laratrust\Checkers\User\LaratrustUserQueryChecker;
-use Laratrust\Checkers\Role\LaratrustRoleDefaultChecker;
+use Laratrust\Checkers\Group\LaratrustGroupDefaultChecker;
 use Laratrust\Checkers\User\LaratrustUserDefaultChecker;
 
 class LaratrustCheckerManager
 {
     /**
-     * The object in charge of checking the roles and permissions.
+     * The object in charge of checking the groups and permissions.
      *
      * @var \Illuminate\Database\Eloquent\Model
      */
@@ -42,13 +42,13 @@ class LaratrustCheckerManager
      *
      * @return \Laratrust\Checkers\LaratrustChecker
      */
-    public function getRoleChecker()
+    public function getGroupChecker()
     {
         switch (Config::get('laratrust.checker', 'default')) {
             case 'default':
-                return new LaratrustRoleDefaultChecker($this->model);
+                return new LaratrustGroupDefaultChecker($this->model);
             case 'query':
-                return new LaratrustRoleQueryChecker($this->model);
+                return new LaratrustGroupQueryChecker($this->model);
         }
     }
 }

@@ -2,19 +2,19 @@
 sidebarDepth: 2
 ---
 
-# Roles & Permissions
+# Groups & Permissions
 
 ## Setting things up
-Let's start by creating the following `Role`s:
+Let's start by creating the following `Group`s:
 
 ```php
-$owner = Role::create([
+$owner = Group::create([
     'name' => 'owner',
     'display_name' => 'Project Owner', // optional
     'description' => 'User is the owner of a given project', // optional
 ]);
 
-$admin = Role::create([
+$admin = Group::create([
     'name' => 'admin',
     'display_name' => 'User Administrator', // optional
     'description' => 'User is allowed to manage and edit other users', // optional
@@ -37,7 +37,7 @@ $editUser = Permission::create([
 ]);
 ```
 
-## Role Permissions Assignment & Removal
+## Group Permissions Assignment & Removal
 
 ### Assignment
 
@@ -62,33 +62,33 @@ $owner->detachPermissions([$createPost, $editUser]); // parameter can be a Permi
 // equivalent to $owner->permissions()->detach([$createPost->id, $editUser->id]);
 ```
 
-## User Roles Assignment & Removal
+## User Groups Assignment & Removal
 
-With both roles created let's assign them to the users.
+With both groups created let's assign them to the users.
 
 ### Assignment
 
 ```php
-$user->attachRole($admin); // parameter can be a Role object, array, id or the role string name
-// equivalent to $user->roles()->attach([$admin->id]);
+$user->attachGroup($admin); // parameter can be a Group object, array, id or the group string name
+// equivalent to $user->groups()->attach([$admin->id]);
 
-$user->attachRoles([$admin, $owner]); // parameter can be a Role object, array, id or the role string name
-// equivalent to $user->roles()->attach([$admin->id, $owner->id]);
+$user->attachGroups([$admin, $owner]); // parameter can be a Group object, array, id or the group string name
+// equivalent to $user->groups()->attach([$admin->id, $owner->id]);
 
-$user->syncRoles([$admin->id, $owner->id]);
-// equivalent to $user->roles()->sync([$admin->id, $owner->id]);
+$user->syncGroups([$admin->id, $owner->id]);
+// equivalent to $user->groups()->sync([$admin->id, $owner->id]);
 
-$user->syncRolesWithoutDetaching([$admin->id, $owner->id]);
-// equivalent to $user->roles()->syncWithoutDetaching([$admin->id, $owner->id]);
+$user->syncGroupsWithoutDetaching([$admin->id, $owner->id]);
+// equivalent to $user->groups()->syncWithoutDetaching([$admin->id, $owner->id]);
 ```
 
 ### Removal
 ```php
-$user->detachRole($admin); // parameter can be a Role object, array, id or the role string name
-// equivalent to $user->roles()->detach([$admin->id]);
+$user->detachGroup($admin); // parameter can be a Group object, array, id or the group string name
+// equivalent to $user->groups()->detach([$admin->id]);
 
-$user->detachRoles([$admin, $owner]); // parameter can be a Role object, array, id or the role string name
-// equivalent to $user->roles()->detach([$admin->id, $owner->id]);
+$user->detachGroups([$admin, $owner]); // parameter can be a Group object, array, id or the group string name
+// equivalent to $user->groups()->detach([$admin->id, $owner->id]);
 ```
 
 ## User Permissions Assignment & Removal
@@ -121,56 +121,56 @@ $user->detachPermissions([$createPost, $editUser]); // parameter can be a Permis
 // equivalent to $user->permissions()->detach([$createPost->id, $editUser->id]);
 ```
 
-## Checking for Roles & Permissions
-Now we can check for roles and permissions simply by doing:
+## Checking for Groups & Permissions
+Now we can check for groups and permissions simply by doing:
 
 ```php
-$user->hasRole('owner');   // false
-$user->hasRole('admin');   // true
+$user->hasGroup('owner');   // false
+$user->hasGroup('admin');   // true
 $user->isAbleTo('edit-user');   // false
 $user->isAbleTo('create-post'); // true
 ```
 
 ::: tip NOTE
 - If you want, you can use the `hasPermission` or `isAbleTo`.
-- If you want, you can use the `isA` and `isAn` methods instead of the `hasRole` method.
+- If you want, you can use the `isA` and `isAn` methods instead of the `hasGroup` method.
 :::
 
 ::: tip NOTE
 We dropped the usage of the `can` method in order to have full support to Laravel's Gates and Policies.
 :::
 
-Both `isAbleTo()` and `hasRole()` can receive an array or pipe separated string of roles & permissions to check:
+Both `isAbleTo()` and `hasGroup()` can receive an array or pipe separated string of groups & permissions to check:
 
 ```php
-$user->hasRole(['owner', 'admin']);       // true
+$user->hasGroup(['owner', 'admin']);       // true
 $user->isAbleTo(['edit-user', 'create-post']); // true
 
-$user->hasRole('owner|admin');       // true
+$user->hasGroup('owner|admin');       // true
 $user->isAbleTo('edit-user|create-post'); // true
 ```
 
-By default, if any of the roles or permissions are present for a user then the method will return true.
+By default, if any of the groups or permissions are present for a user then the method will return true.
 Passing `true` as a second parameter instructs the method to require **all** of the items:
 
 ```php
-$user->hasRole(['owner', 'admin']);             // true
-$user->hasRole(['owner', 'admin'], true);       // false, user does not have admin role
+$user->hasGroup(['owner', 'admin']);             // true
+$user->hasGroup(['owner', 'admin'], true);       // false, user does not have admin group
 $user->isAbleTo(['edit-user', 'create-post']);       // true
 $user->isAbleTo(['edit-user', 'create-post'], true); // false, user does not have edit-user permission
 ```
 
-You can have as many `Role`s as you want for each `User` and vice versa. Also, you can have as many direct `Permissions`s as you want for each `User` and vice versa.
+You can have as many `Group`s as you want for each `User` and vice versa. Also, you can have as many direct `Permissions`s as you want for each `User` and vice versa.
 
-The `Laratrust` class has shortcuts to both `isAbleTo()` and `hasRole()` for the currently logged in user:
+The `Laratrust` class has shortcuts to both `isAbleTo()` and `hasGroup()` for the currently logged in user:
 
 ```php
-Laratrust::hasRole('role-name');
+Laratrust::hasGroup('group-name');
 Laratrust::isAbleTo('permission-name');
 
 // is identical to
 
-Auth::user()->hasRole('role-name');
+Auth::user()->hasGroup('group-name');
 Auth::user()->hasPermission('permission-name');
 ```
 
@@ -206,13 +206,13 @@ $user->isAbleToCreateUsers();
 ## User ability
 
 More advanced checking can be done using the awesome `ability` function.
-It takes in three parameters (roles, permissions, options):
+It takes in three parameters (groups, permissions, options):
 
-* `roles` is a set of roles to check.
+* `groups` is a set of groups to check.
 * `permissions` is a set of permissions to check.
 * `options` is a set of options to change the method behavior.
 
-Either of the roles or permissions variable can be a pipe separated string or an array:
+Either of the groups or permissions variable can be a pipe separated string or an array:
 
 ```php
 $user->ability(['admin', 'owner'], ['create-post', 'edit-user']);
@@ -222,7 +222,7 @@ $user->ability(['admin', 'owner'], ['create-post', 'edit-user']);
 $user->ability('admin|owner', 'create-post|edit-user');
 ```
 
-This will check whether the user has any of the provided roles and permissions.
+This will check whether the user has any of the provided groups and permissions.
 In this case it will return true since the user is an `admin` and has the `create-post` permission.
 
 The third parameter is an options array:
@@ -234,7 +234,7 @@ $options = [
 ];
 ```
 
-* `validate_all` is a boolean flag to set whether to check all the values for true, or to return true if at least one role or permission is matched.
+* `validate_all` is a boolean flag to set whether to check all the values for true, or to return true if at least one group or permission is matched.
 * `return_type` specifies whether to return a boolean, array of checked values, or both in an array.
 
 Here is an example output:
@@ -256,8 +256,8 @@ var_dump($validate);
 
 var_dump($allValidations);
 // array(4) {
-//     ['role'] => bool(true)
-//     ['role_2'] => bool(false)
+//     ['group'] => bool(true)
+//     ['group_2'] => bool(false)
 //     ['create-post'] => bool(true)
 //     ['edit-user'] => bool(false)
 // }

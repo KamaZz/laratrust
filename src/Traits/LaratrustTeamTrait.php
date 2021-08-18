@@ -9,7 +9,7 @@ trait LaratrustTeamTrait
     use LaratrustDynamicUserRelationsCalls;
 
     /**
-     * Morph by Many relationship between the role and the one of the possible user models.
+     * Morph by Many relationship between the group and the one of the possible user models.
      *
      * @param  string $relationship
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
@@ -19,7 +19,7 @@ trait LaratrustTeamTrait
         return $this->morphedByMany(
             Config::get('laratrust.user_models')[$relationship],
             'user',
-            Config::get('laratrust.tables.role_user'),
+            Config::get('laratrust.tables.group_user'),
             Config::get('laratrust.foreign_keys.team'),
             Config::get('laratrust.foreign_keys.user')
         );

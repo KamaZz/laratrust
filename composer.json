@@ -1,6 +1,6 @@
 {
     "name": "santigarcor/laratrust",
-    "description": "This package provides a flexible way to add Role-based Permissions to Laravel",
+    "description": "This package provides a flexible way to add Group-based Permissions to Laravel",
     "keywords": [
         "acl",
         "authorization",
@@ -9,7 +9,7 @@
         "permissions",
         "php",
         "rbac",
-        "roles",
+        "groups",
         "multiusers",
         "teams"
     ],

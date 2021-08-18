@@ -13,18 +13,18 @@ class LaratrustAbility extends LaratrustMiddleware
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  Closure $next
-     * @param  string  $roles
+     * @param  string  $groups
      * @param  string  $permissions
      * @param  string|null  $team
      * @param  string|null  $options
      * @return mixed
      */
-    public function handle($request, Closure $next, $roles, $permissions, $team = null, $options = '')
+    public function handle($request, Closure $next, $groups, $permissions, $team = null, $options = '')
     {
         list($team, $validateAll, $guard) = $this->assignRealValuesTo($team, $options);
 
-        if (!is_array($roles)) {
-            $roles = explode(self::DELIMITER, $roles);
+        if (!is_array($groups)) {
+            $groups = explode(self::DELIMITER, $groups);
         }
 
         if (!is_array($permissions)) {
@@ -34,7 +34,7 @@ class LaratrustAbility extends LaratrustMiddleware
         if (
             Auth::guard($guard)->guest()
             || !Auth::guard($guard)->user()
-                    ->ability($roles, $permissions, $team, [
+                    ->ability($groups, $permissions, $team, [
                         'validate_all' => $validateAll
                     ])
          ) {

@@ -29,13 +29,13 @@ In order to upgrade from Laratrust 4.0 to 5.0 you have to follow these steps:
 
     4.6. Set the `teams_strict_check` value to `true` **only** if you are using teams.
 
-5. Inside your `Role`, `Permission` and `Team` models update the `use` statement from:
+5. Inside your `Group`, `Permission` and `Team` models update the `use` statement from:
 
-    - `use Laratrust\LaratrustRole` to `use Laratrust\Models\LaratrustRole`;
+    - `use Laratrust\LaratrustGroup` to `use Laratrust\Models\LaratrustGroup`;
     - `use Laratrust\LaratrustPermission` to `use Laratrust\Models\LaratrustPermission`;
     - `use Laratrust\LaratrustTeam` to `use Laratrust\Models\LaratrustTeam`;
 
-6. If you use the ability method and you pass it comma separated roles or permissions, change them to a pipe separated string:
+6. If you use the ability method and you pass it comma separated groups or permissions, change them to a pipe separated string:
 
 ```php
  // From
@@ -53,9 +53,9 @@ public function ownerKey() {}
 public function ownerKey($owner) {}
 ```
 
-8. If you use teams and in your code you use the `syncRoles` and `syncPermissions` read the new <docs-link to="/usage/concepts.html#new-sync-behavior">sync method behavior</docs-link>.
+8. If you use teams and in your code you use the `syncGroups` and `syncPermissions` read the new <docs-link to="/usage/concepts.html#new-sync-behavior">sync method behavior</docs-link>.
 
-9. The `cachedRoles` and `cachedPermissions` methods now return an array when you have the `laratrust.use_cache` option set to `true`. So if you use these methods, please check your code.
+9. The `cachedGroups` and `cachedPermissions` methods now return an array when you have the `laratrust.use_cache` option set to `true`. So if you use these methods, please check your code.
 
 10. Delete the `LaratrustSeeder.php` file and run `php artisan laratrust:seeder`.
 

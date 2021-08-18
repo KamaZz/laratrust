@@ -2,7 +2,7 @@
 
 namespace Laratrust\Test;
 
-use Laratrust\Tests\Models\Role;
+use Laratrust\Tests\Models\Group;
 use Laratrust\Tests\Models\Team;
 use Laratrust\Tests\Models\User;
 use Laratrust\Tests\LaratrustTestCase;
@@ -23,53 +23,53 @@ class LaratrustUserScopesTest extends LaratrustTestCase
     }
 
 
-    public function testScopeWhereRoleIs()
+    public function testScopeWhereGroupIs()
     {
         /*
         |------------------------------------------------------------
         | Set
         |------------------------------------------------------------
          */
-        $roleA = Role::create(['name' => 'role_a']);
-        $roleB = Role::create(['name' => 'role_b']);
-        $roleC = Role::create(['name' => 'role_c']);
-        $roleD = Role::create(['name' => 'role_d']);
+        $groupA = Group::create(['name' => 'group_a']);
+        $groupB = Group::create(['name' => 'group_b']);
+        $groupC = Group::create(['name' => 'group_c']);
+        $groupD = Group::create(['name' => 'group_d']);
         $team = Team::create(['name' => 'team_a']);
 
-        $this->user->attachRoles([$roleA, $roleB]);
-        $this->user->attachRole($roleD, $team->id);
+        $this->user->attachGroups([$groupA, $groupB]);
+        $this->user->attachGroup($groupD, $team->id);
 
         /*
         |------------------------------------------------------------
         | Assertion
         |------------------------------------------------------------
          */
-        $this->assertCount(1, User::whereRoleIs('role_a')->get());
-        $this->assertCount(1, User::whereRoleIs(['role_a', 'role_c'])->get());
-        $this->assertCount(0, User::whereRoleIs('role_c')->get());
-        $this->assertCount(0, User::whereRoleIs(['role_c', 'role_x'])->get());
+        $this->assertCount(1, User::whereGroupIs('group_a')->get());
+        $this->assertCount(1, User::whereGroupIs(['group_a', 'group_c'])->get());
+        $this->assertCount(0, User::whereGroupIs('group_c')->get());
+        $this->assertCount(0, User::whereGroupIs(['group_c', 'group_x'])->get());
 
-        $this->assertCount(1, User::whereRoleIs('role_d', 'team_a')->get());
+        $this->assertCount(1, User::whereGroupIs('group_d', 'team_a')->get());
 
         $this->app['config']->set('laratrust.teams.strict_check', true);
-        $this->assertCount(0, User::whereRoleIs('role_d')->get());
-        $this->assertCount(0, User::whereRoleIs(['role_d', 'role_c'])->get());
+        $this->assertCount(0, User::whereGroupIs('group_d')->get());
+        $this->assertCount(0, User::whereGroupIs(['group_d', 'group_c'])->get());
         $this->app['config']->set('laratrust.teams.strict_check', false);
-        $this->assertCount(1, User::whereRoleIs('role_d')->get());
-        $this->assertCount(1, User::whereRoleIs(['role_d', 'role_c'])->get());
+        $this->assertCount(1, User::whereGroupIs('group_d')->get());
+        $this->assertCount(1, User::whereGroupIs(['group_d', 'group_c'])->get());
     }
 
-    public function testScopeOrWhereRoleIs()
+    public function testScopeOrWhereGroupIs()
     {
         /*
         |------------------------------------------------------------
         | Set
         |------------------------------------------------------------
          */
-        $roleA = Role::create(['name' => 'role_a']);
-        $roleC = Role::create(['name' => 'role_c']);
+        $groupA = Group::create(['name' => 'group_a']);
+        $groupC = Group::create(['name' => 'group_c']);
 
-        $this->user->attachRole($roleA);
+        $this->user->attachGroup($groupA);
 
         /*
         |------------------------------------------------------------
@@ -79,15 +79,15 @@ class LaratrustUserScopesTest extends LaratrustTestCase
         $this->assertCount(
             1,
             User::query()
-                ->whereRoleIs('role_a')
-                ->orWhereRoleIs('role_c')
+                ->whereGroupIs('group_a')
+                ->orWhereGroupIs('group_c')
                 ->get()
         );
         $this->assertCount(
             0,
             User::query()
-                ->whereRoleIs('role_d')
-                ->orWhereRoleIs('role_c')
+                ->whereGroupIs('group_d')
+                ->orWhereGroupIs('group_c')
                 ->get()
         );
     }
@@ -99,17 +99,17 @@ class LaratrustUserScopesTest extends LaratrustTestCase
         | Set
         |------------------------------------------------------------
          */
-        $roleA = Role::create(['name' => 'role_a']);
-        $roleB = Role::create(['name' => 'role_b']);
+        $groupA = Group::create(['name' => 'group_a']);
+        $groupB = Group::create(['name' => 'group_b']);
         $permissionA = Permission::create(['name' => 'permission_a']);
         $permissionB = Permission::create(['name' => 'permission_b']);
         $permissionC = Permission::create(['name' => 'permission_c']);
         $permissionD = Permission::create(['name' => 'permission_d']);
 
-        $roleA->attachPermissions([$permissionA, $permissionB]);
-        $roleB->attachPermissions([$permissionB, $permissionC]);
+        $groupA->attachPermissions([$permissionA, $permissionB]);
+        $groupB->attachPermissions([$permissionB, $permissionC]);
         $this->user->attachPermissions([$permissionB, $permissionC]);
-        $this->user->attachRoles([$roleA, $roleB]);
+        $this->user->attachGroups([$groupA, $groupB]);
 
         /*
         |------------------------------------------------------------
@@ -129,17 +129,17 @@ class LaratrustUserScopesTest extends LaratrustTestCase
         | Set
         |------------------------------------------------------------
          */
-        $roleA = Role::create(['name' => 'role_a']);
-        $roleB = Role::create(['name' => 'role_b']);
+        $groupA = Group::create(['name' => 'group_a']);
+        $groupB = Group::create(['name' => 'group_b']);
         $permissionA = Permission::create(['name' => 'permission_a']);
         $permissionB = Permission::create(['name' => 'permission_b']);
         $permissionC = Permission::create(['name' => 'permission_c']);
         $permissionD = Permission::create(['name' => 'permission_d']);
 
-        $roleA->attachPermissions([$permissionA, $permissionB]);
-        $roleB->attachPermissions([$permissionB, $permissionC]);
+        $groupA->attachPermissions([$permissionA, $permissionB]);
+        $groupB->attachPermissions([$permissionB, $permissionC]);
         $this->user->attachPermissions([$permissionB, $permissionC]);
-        $this->user->attachRoles([$roleA, $roleB]);
+        $this->user->attachGroups([$groupA, $groupB]);
 
         /*
         |------------------------------------------------------------
@@ -169,24 +169,24 @@ class LaratrustUserScopesTest extends LaratrustTestCase
         );
     }
 
-    public function testScopeToRetrieveTheUsersThatDontHaveRoles()
+    public function testScopeToRetrieveTheUsersThatDontHaveGroups()
     {
         /*
         |------------------------------------------------------------
         | Set
         |------------------------------------------------------------
         */
-        $roleA = Role::create(['name' => 'role_a']);
-        $this->user->attachRoles([$roleA]);
-        $userWithoutRole = User::create(['name' => 'test2', 'email' => 'test2@test.com']);
+        $groupA = Group::create(['name' => 'group_a']);
+        $this->user->attachGroups([$groupA]);
+        $userWithoutGroup = User::create(['name' => 'test2', 'email' => 'test2@test.com']);
 
         /*
         |------------------------------------------------------------
         | Assertion
         |------------------------------------------------------------
          */
-        $this->assertEquals($userWithoutRole->id, User::whereDoesntHaveRole()->first()->id);
-        $this->assertCount(1, User::whereDoesntHaveRole()->get());
+        $this->assertEquals($userWithoutGroup->id, User::whereDoesntHaveGroup()->first()->id);
+        $this->assertCount(1, User::whereDoesntHaveGroup()->get());
     }
 
     public function testScopeToRetrieveTheUsersThatDontHavePermissions()
@@ -196,16 +196,16 @@ class LaratrustUserScopesTest extends LaratrustTestCase
         | Set
         |------------------------------------------------------------
         */
-        $roleA = Role::create(['name' => 'role_a']);
-        $roleB = Role::create(['name' => 'role_b']);
+        $groupA = Group::create(['name' => 'group_a']);
+        $groupB = Group::create(['name' => 'group_b']);
         $permissionA = Permission::create(['name' => 'permission_a']);
         $permissionB = Permission::create(['name' => 'permission_b']);
 
-        $roleA->attachPermissions([$permissionA]);
+        $groupA->attachPermissions([$permissionA]);
         $this->user->attachPermissions([$permissionB]);
-        $this->user->attachRoles([$roleA]);
+        $this->user->attachGroups([$groupA]);
         $userWithoutPerms = User::create(['name' => 'test2', 'email' => 'test2@test.com']);
-        $userWithoutPerms->attachRole($roleB);
+        $userWithoutPerms->attachGroup($groupB);
 
         /*
         |------------------------------------------------------------

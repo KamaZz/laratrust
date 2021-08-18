@@ -3,8 +3,8 @@ layout: 'Home'
 actionText: Get Started →
 actionLink: /docs/
 footer: MIT Licensed | Copyright © 2018-present Santiago Garcia
-title: Laravel role-based access control package
-tagline: Laravel role-based access control package
+title: Laravel group-based access control package
+tagline: Laravel group-based access control package
 ---
 
 [![tests](https://github.com/santigarcor/laratrust/workflows/tests/badge.svg)](https://github.com/santigarcor/laratrust/actions?query=workflow%3Atests)
@@ -13,7 +13,7 @@ tagline: Laravel role-based access control package
 [![StyleCI](https://styleci.io/repos/59691202/shield)](https://styleci.io/repos/59691202)
 [![License](https://poser.pugx.org/santigarcor/laratrust/license)](//packagist.org/packages/santigarcor/laratrust)
 
-Laratrust is an easy and flexible way to add roles, permissions and teams authorization to **Laravel**.
+Laratrust is an easy and flexible way to add groups, permissions and teams authorization to **Laravel**.
 
 ## Version Compatibility
 
@@ -28,13 +28,13 @@ Laratrust is an easy and flexible way to add roles, permissions and teams author
 
 ## What does Laratrust support?
 - Multiple user models.
-- Multiple roles and permissions can be attached to users.
-- Multiple permissions can be attached to roles.
-- Roles and permissions verification.
-- Roles and permissions caching.
-- Events when roles and permissions are attached, detached or synced.
-- Multiple roles and permissions can be attached to users within teams.
+- Multiple groups and permissions can be attached to users.
+- Multiple permissions can be attached to groups.
+- Groups and permissions verification.
+- Groups and permissions caching.
+- Events when groups and permissions are attached, detached or synced.
+- Multiple groups and permissions can be attached to users within teams.
 - Objects ownership verification.
 - Multiple guards for the middleware.
-- A simple administration panel for roles and permissions.
+- A simple administration panel for groups and permissions.
 - Laravel gates and policies.

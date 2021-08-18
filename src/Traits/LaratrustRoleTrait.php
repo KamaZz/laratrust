@@ -7,25 +7,25 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Laratrust\Checkers\LaratrustCheckerManager;
 
-trait LaratrustRoleTrait
+trait LaratrustGroupTrait
 {
     use LaratrustDynamicUserRelationsCalls;
     use LaratrustHasEvents;
 
     /**
-     * Boots the role model and attaches event listener to
+     * Boots the group model and attaches event listener to
      * remove the many-to-many records when trying to delete.
-     * Will NOT delete any records if the role model uses soft deletes.
+     * Will NOT delete any records if the group model uses soft deletes.
      *
      * @return void|bool
      */
-    public static function bootLaratrustRoleTrait()
+    public static function bootLaratrustGroupTrait()
     {
-        $flushCache = function ($role) {
-            $role->flushCache();
+        $flushCache = function ($group) {
+            $group->flushCache();
         };
 
-        // If the role doesn't use SoftDeletes.
+        // If the group doesn't use SoftDeletes.
         if (method_exists(static::class, 'restored')) {
             static::restored($flushCache);
         }
@@ -33,31 +33,31 @@ trait LaratrustRoleTrait
         static::deleted($flushCache);
         static::saved($flushCache);
 
-        static::deleting(function ($role) {
-            if (method_exists($role, 'bootSoftDeletes') && !$role->forceDeleting) {
+        static::deleting(function ($group) {
+            if (method_exists($group, 'bootSoftDeletes') && !$group->forceDeleting) {
                 return;
             }
 
-            $role->permissions()->sync([]);
+            $group->permissions()->sync([]);
 
             foreach (array_keys(Config::get('laratrust.user_models')) as $key) {
-                $role->$key()->sync([]);
+                $group->$key()->sync([]);
             }
         });
     }
 
     /**
-     * Return the right checker for the role model.
+     * Return the right checker for the group model.
      *
-     * @return \Laratrust\Checkers\Role\LaratrustRoleChecker
+     * @return \Laratrust\Checkers\Group\LaratrustGroupChecker
      */
-    protected function laratrustRoleChecker()
+    protected function laratrustGroupChecker()
     {
-        return (new LaratrustCheckerManager($this))->getRoleChecker();
+        return (new LaratrustCheckerManager($this))->getGroupChecker();
     }
 
     /**
-     * Morph by Many relationship between the role and the one of the possible user models.
+     * Morph by Many relationship between the group and the one of the possible user models.
      *
      * @param  string  $relationship
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
@@ -67,8 +67,8 @@ trait LaratrustRoleTrait
         return $this->morphedByMany(
             Config::get('laratrust.user_models')[$relationship],
             'user',
-            Config::get('laratrust.tables.role_user'),
-            Config::get('laratrust.foreign_keys.role'),
+            Config::get('laratrust.tables.group_user'),
+            Config::get('laratrust.foreign_keys.group'),
             Config::get('laratrust.foreign_keys.user')
         );
     }
@@ -82,14 +82,14 @@ trait LaratrustRoleTrait
     {
         return $this->belongsToMany(
             Config::get('laratrust.models.permission'),
-            Config::get('laratrust.tables.permission_role'),
-            Config::get('laratrust.foreign_keys.role'),
+            Config::get('laratrust.tables.permission_group'),
+            Config::get('laratrust.foreign_keys.group'),
             Config::get('laratrust.foreign_keys.permission')
         );
     }
 
     /**
-     * Checks if the role has a permission by its name.
+     * Checks if the group has a permission by its name.
      *
      * @param  string|array  $permission       Permission name or array of permission names.
      * @param  bool  $requireAll       All permissions in the array are required.
@@ -97,8 +97,8 @@ trait LaratrustRoleTrait
      */
     public function hasPermission($permission, $requireAll = false)
     {
-        return $this->laratrustRoleChecker($this)
-            ->currentRoleHasPermission($permission, $requireAll);
+        return $this->laratrustGroupChecker($this)
+            ->currentGroupHasPermission($permission, $requireAll);
     }
 
     /**
@@ -123,7 +123,7 @@ trait LaratrustRoleTrait
     }
 
     /**
-     * Attach permission to current role.
+     * Attach permission to current group.
      *
      * @param  object|array  $permission
      * @return void
@@ -140,7 +140,7 @@ trait LaratrustRoleTrait
     }
 
     /**
-     * Detach permission from current role.
+     * Detach permission from current group.
      *
      * @param  object|array  $permission
      * @return void
@@ -157,7 +157,7 @@ trait LaratrustRoleTrait
     }
 
     /**
-     * Attach multiple permissions to current role.
+     * Attach multiple permissions to current group.
      *
      * @param  mixed  $permissions
      * @return void
@@ -172,7 +172,7 @@ trait LaratrustRoleTrait
     }
 
     /**
-     * Detach multiple permissions from current role
+     * Detach multiple permissions from current group
      *
      * @param  mixed  $permissions
      * @return void
@@ -191,12 +191,12 @@ trait LaratrustRoleTrait
     }
 
     /**
-     * Flush the role's cache.
+     * Flush the group's cache.
      *
      * @return void
      */
     public function flushCache()
     {
-        return $this->laratrustRoleChecker()->currentRoleFlushCache();
+        return $this->laratrustGroupChecker()->currentGroupFlushCache();
     }
 }

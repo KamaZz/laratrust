@@ -2,7 +2,7 @@
 
 return [
     /**
-     * Control if the seeder should create a user per role while seeding the data.
+     * Control if the seeder should create a user per group while seeding the data.
      */
     'create_users' => false,
 
@@ -11,7 +11,7 @@ return [
      */
     'truncate_tables' => true,
 
-    'roles_structure' => [
+    'groups_structure' => [
         'superadministrator' => [
             'users' => 'c,r,u,d',
             'payments' => 'c,r,u,d',
@@ -24,7 +24,7 @@ return [
         'user' => [
             'profile' => 'r,u',
         ],
-        'role_name' => [
+        'group_name' => [
             'module_1_name' => 'c,r,u,d',
         ]
     ],

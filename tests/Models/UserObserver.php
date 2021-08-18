@@ -4,11 +4,11 @@ namespace Laratrust\Tests\Models;
 
 class UserObserver
 {
-    public function roleAttached($user, $thing, $team)
+    public function groupAttached($user, $thing, $team)
     {
     }
 
-    public function roleDetached($user, $thing, $team)
+    public function groupDetached($user, $thing, $team)
     {
     }
 
@@ -20,7 +20,7 @@ class UserObserver
     {
     }
 
-    public function roleSynced($user, $thing, $team)
+    public function groupSynced($user, $thing, $team)
     {
     }
 

@@ -20,16 +20,16 @@
             <div class="flex items-baseline">
               <a href="{{config('laratrust.panel.go_back_route')}}" class="nav-button">← Go Back</a>
               <a
-                href="{{ route('laratrust.roles-assignment.index') }}"
-                class="ml-4 {{ request()->is('*roles-assigment*') ? 'nav-button-active' : 'nav-button' }}"
+                href="{{ route('laratrust.groups-assignment.index') }}"
+                class="ml-4 {{ request()->is('*groups-assigment*') ? 'nav-button-active' : 'nav-button' }}"
               >
-                Roles & Permissions Assignment
+                Groups & Permissions Assignment
               </a>
               <a
-                href="{{route('laratrust.roles.index')}}"
-                class="ml-4 {{ request()->is('*roles') ? 'nav-button-active' : 'nav-button' }}"
+                href="{{route('laratrust.groups.index')}}"
+                class="ml-4 {{ request()->is('*groups') ? 'nav-button-active' : 'nav-button' }}"
               >
-                Roles
+                Groups
               </a>
               <a
                 href="{{ route('laratrust.permissions.index') }}"
@@ -86,7 +86,7 @@
     <div class="max-w-6xl mx-auto py-6 sm:px-6 lg:px-8">
       @foreach (['error', 'warning', 'success'] as $msg)
         @if(Session::has('laratrust-' . $msg))
-        <div class="alert-{{ $msg }}" role="alert">
+        <div class="alert-{{ $msg }}" group="alert">
           <p>{{ Session::get('laratrust-' . $msg) }}</p>
         </div>
         @endif

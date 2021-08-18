@@ -4,21 +4,21 @@ namespace Laratrust\Middleware;
 
 use Closure;
 
-class LaratrustRole extends LaratrustMiddleware
+class LaratrustGroup extends LaratrustMiddleware
 {
     /**
      * Handle incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  Closure $next
-     * @param  string  $roles
+     * @param  string  $groups
      * @param  string|null  $team
      * @param  string|null  $options
      * @return mixed
      */
-    public function handle($request, Closure $next, $roles, $team = null, $options = '')
+    public function handle($request, Closure $next, $groups, $team = null, $options = '')
     {
-        if (!$this->authorization('roles', $roles, $team, $options)) {
+        if (!$this->authorization('groups', $groups, $team, $options)) {
             return $this->unauthorized();
         }
 

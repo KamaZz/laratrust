@@ -8,24 +8,24 @@ use Illuminate\Support\Facades\Config;
 class LaratrustUserQueryChecker extends LaratrustUserChecker
 {
     /**
-     * Checks if the user has a role by its name.
+     * Checks if the user has a group by its name.
      *
      * @param  string|bool   $team      Team name.
      * @return array
      */
-    public function getCurrentUserRoles($team = null)
+    public function getCurrentUserGroups($team = null)
     {
         if (config('laratrust.teams.enabled') === false) {
-            return $this->user->roles->pluck('name')->toArray();
+            return $this->user->groups->pluck('name')->toArray();
         }
 
         if ($team === null && config('laratrust.teams.strict_check') === false) {
-            return $this->user->roles->pluck('name')->toArray();
+            return $this->user->groups->pluck('name')->toArray();
         }
 
         if ($team === null) {
             return $this->user
-                ->roles()
+                ->groups()
                 ->wherePivot(config('laratrust.foreign_keys.team'), null)
                 ->pluck('name')
                 ->toArray();
@@ -34,34 +34,34 @@ class LaratrustUserQueryChecker extends LaratrustUserChecker
         $teamId = Helper::fetchTeam($team);
 
         return $this->user
-            ->roles()
+            ->groups()
             ->wherePivot(config('laratrust.foreign_keys.team'), $teamId)
             ->pluck('name')
             ->toArray();
     }
 
     /**
-     * Checks if the user has a role by its name.
+     * Checks if the user has a group by its name.
      *
-     * @param  string|array  $name       Role name or array of role names.
-     * @param  string|bool   $team      Team name or requiredAll roles.
-     * @param  bool          $requireAll All roles in the array are required.
+     * @param  string|array  $name       Group name or array of group names.
+     * @param  string|bool   $team      Team name or requiredAll groups.
+     * @param  bool          $requireAll All groups in the array are required.
      * @return bool
      */
-    public function currentUserHasRole($name, $team = null, $requireAll = false)
+    public function currentUserHasGroup($name, $team = null, $requireAll = false)
     {
         if (empty($name)) {
             return true;
         }
 
         $name = Helper::standardize($name);
-        $rolesNames = is_array($name) ? $name : [$name];
+        $groupsNames = is_array($name) ? $name : [$name];
         list($team, $requireAll) = Helper::assignRealValuesTo($team, $requireAll, 'is_bool');
         $useTeams = Config::get('laratrust.teams.enabled');
         $teamStrictCheck = Config::get('laratrust.teams.strict_check');
 
-        $rolesCount = $this->user->roles()
-            ->whereIn('name', $rolesNames)
+        $groupsCount = $this->user->groups()
+            ->whereIn('name', $groupsNames)
             ->when($useTeams && ($teamStrictCheck || !is_null($team)), function ($query) use ($team) {
                 $teamId = Helper::fetchTeam($team);
 
@@ -69,15 +69,15 @@ class LaratrustUserQueryChecker extends LaratrustUserChecker
             })
             ->count();
 
-        return $requireAll ? $rolesCount == count($rolesNames) : $rolesCount > 0;
+        return $requireAll ? $groupsCount == count($groupsNames) : $groupsCount > 0;
     }
 
     /**
      * Check if user has a permission by its name.
      *
      * @param  string|array  $permission Permission string or array of permissions.
-     * @param  string|bool  $team      Team name or requiredAll roles.
-     * @param  bool  $requireAll All roles in the array are required.
+     * @param  string|bool  $team      Team name or requiredAll groups.
+     * @param  bool  $requireAll All groups in the array are required.
      * @return bool
      */
     public function currentUserHasPermission($permission, $team = null, $requireAll = false)
@@ -95,7 +95,7 @@ class LaratrustUserQueryChecker extends LaratrustUserChecker
         list($permissionsWildcard, $permissionsNoWildcard) =
             Helper::getPermissionWithAndWithoutWildcards($permissionsNames);
 
-        $rolesPermissionsCount = $this->user->roles()
+        $groupsPermissionsCount = $this->user->groups()
             ->withCount(['permissions' =>
                 function ($query) use ($permissionsNoWildcard, $permissionsWildcard) {
                     $query->whereIn('name', $permissionsNoWildcard);
@@ -129,8 +129,8 @@ class LaratrustUserQueryChecker extends LaratrustUserChecker
             ->count();
 
         return $requireAll
-            ? $rolesPermissionsCount + $directPermissionsCount >= count($permissionsNames)
-            : $rolesPermissionsCount + $directPermissionsCount > 0;
+            ? $groupsPermissionsCount + $directPermissionsCount >= count($permissionsNames)
+            : $groupsPermissionsCount + $directPermissionsCount > 0;
     }
 
     public function currentUserFlushCache()

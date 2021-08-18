@@ -27,8 +27,8 @@ class LaratrustPermissionTest extends LaratrustTestCase
         $this->assertEmpty($this->permission->users);
     }
 
-    public function testRolesRelationship()
+    public function testGroupsRelationship()
     {
-        $this->assertInstanceOf('\Illuminate\Database\Eloquent\Relations\BelongsToMany', $this->permission->roles());
+        $this->assertInstanceOf('\Illuminate\Database\Eloquent\Relations\BelongsToMany', $this->permission->groups());
     }
 }

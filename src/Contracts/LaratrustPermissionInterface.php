@@ -6,11 +6,11 @@ interface LaratrustPermissionInterface
 {
 
     /**
-     * Many-to-Many relations with role model.
+     * Many-to-Many relations with group model.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function roles();
+    public function groups();
 
     /**
      * Morph by Many relationship between the permission and the one of the possible user models.

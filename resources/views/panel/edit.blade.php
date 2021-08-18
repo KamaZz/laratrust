@@ -53,7 +53,7 @@
             placeholder="Some description for the {{$type}}"
           >{{ $model->description ?? old('description') }}</textarea>
         </label>
-        @if($type == 'role')
+        @if($type == 'group')
           <span class="block text-gray-700">Permissions</span>
           <div class="flex flex-wrap justify-start mb-4">
             @foreach ($permissions as $permission)

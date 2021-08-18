@@ -9,16 +9,16 @@ You are using an old version of Laratrust. Consider updating to the <docs-link t
 # Concepts
 
 ## Set things up
-Let's start by creating the following `Role`s:
+Let's start by creating the following `Group`s:
 
 ```php
-$owner = new Role();
+$owner = new Group();
 $owner->name         = 'owner';
 $owner->display_name = 'Project Owner'; // optional
 $owner->description  = 'User is the owner of a given project'; // optional
 $owner->save();
 
-$admin = new Role();
+$admin = new Group();
 $admin->name         = 'admin';
 $admin->display_name = 'User Administrator'; // optional
 $admin->description  = 'User is allowed to manage and edit other users'; // optional
@@ -43,8 +43,8 @@ $editUser->description  = 'edit existing users'; // optional
 $editUser->save();
 ```
 
-## Role Permissions Assignment & Removal
-By using the `LaratrustRoleTrait` we can do the following:
+## Group Permissions Assignment & Removal
+By using the `LaratrustGroupTrait` we can do the following:
 
 ### Assignment
 
@@ -69,34 +69,34 @@ $owner->detachPermissions([$createPost, $editUser]); // parameter can be a Permi
 // equivalent to $owner->permissions()->detach([$createPost->id, $editUser->id]);
 ```
 
-## User Roles Assignment & Removal
+## User Groups Assignment & Removal
 
-With both roles created let's assign them to the users.
+With both groups created let's assign them to the users.
 Thanks to the `LaratrustUserTrait` this is as easy as:
 
 ### Assignment
 
 ```php
-$user->attachRole($admin); // parameter can be a Role object, array, id or the role string name
-// equivalent to $user->roles()->attach([$admin->id]);
+$user->attachGroup($admin); // parameter can be a Group object, array, id or the group string name
+// equivalent to $user->groups()->attach([$admin->id]);
 
-$user->attachRoles([$admin, $owner]); // parameter can be a Role object, array, id or the role string name
-// equivalent to $user->roles()->attach([$admin->id, $owner->id]);
+$user->attachGroups([$admin, $owner]); // parameter can be a Group object, array, id or the group string name
+// equivalent to $user->groups()->attach([$admin->id, $owner->id]);
 
-$user->syncRoles([$admin->id, $owner->id]);
-// equivalent to $user->roles()->sync([$admin->id, $owner->id]);
+$user->syncGroups([$admin->id, $owner->id]);
+// equivalent to $user->groups()->sync([$admin->id, $owner->id]);
 
-$user->syncRolesWithoutDetaching([$admin->id, $owner->id]);
-// equivalent to $user->roles()->syncWithoutDetaching([$admin->id, $owner->id]);
+$user->syncGroupsWithoutDetaching([$admin->id, $owner->id]);
+// equivalent to $user->groups()->syncWithoutDetaching([$admin->id, $owner->id]);
 ```
 
 ### Removal
 ```php
-$user->detachRole($admin); // parameter can be a Role object, array, id or the role string name
-// equivalent to $user->roles()->detach([$admin->id]);
+$user->detachGroup($admin); // parameter can be a Group object, array, id or the group string name
+// equivalent to $user->groups()->detach([$admin->id]);
 
-$user->detachRoles([$admin, $owner]); // parameter can be a Role object, array, id or the role string name
-// equivalent to $user->roles()->detach([$admin->id, $owner->id]);
+$user->detachGroups([$admin, $owner]); // parameter can be a Group object, array, id or the group string name
+// equivalent to $user->groups()->detach([$admin->id, $owner->id]);
 ```
 
 ## User Permissions Assignment & Removal
@@ -129,56 +129,56 @@ $user->detachPermissions([$createPost, $editUser]); // parameter can be a Permis
 // equivalent to $user->permissions()->detach([$createPost->id, $editUser->id]);
 ```
 
-## Checking for Roles & Permissions
-Now we can check for roles and permissions simply by doing:
+## Checking for Groups & Permissions
+Now we can check for groups and permissions simply by doing:
 
 ```php
-$user->hasRole('owner');   // false
-$user->hasRole('admin');   // true
+$user->hasGroup('owner');   // false
+$user->hasGroup('admin');   // true
 $user->can('edit-user');   // false
 $user->can('create-post'); // true
 ```
 
 ::: tip NOTE
 - If you want, you can use the `hasPermission` and `isAbleTo` methods instead of the `can` method.
-- If you want, you can use the `isA` and `isAn` methods instead of the `hasRole` method.
+- If you want, you can use the `isA` and `isAn` methods instead of the `hasGroup` method.
 :::
 
 ::: tip NOTE
 If you want to use the Authorizable trait alongside Laratrust please check the <docs-link to="/troubleshooting.html">troubleshooting</docs-link> page.
 :::
 
-Both `can()` and `hasRole()` can receive an array or pipe separated string of roles & permissions to check:
+Both `can()` and `hasGroup()` can receive an array or pipe separated string of groups & permissions to check:
 
 ```php
-$user->hasRole(['owner', 'admin']);       // true
+$user->hasGroup(['owner', 'admin']);       // true
 $user->can(['edit-user', 'create-post']); // true
 
-$user->hasRole('owner|admin');       // true
+$user->hasGroup('owner|admin');       // true
 $user->can('edit-user|create-post'); // true
 ```
 
-By default, if any of the roles or permissions are present for a user then the method will return true.
+By default, if any of the groups or permissions are present for a user then the method will return true.
 Passing `true` as a second parameter instructs the method to require **all** of the items:
 
 ```php
-$user->hasRole(['owner', 'admin']);             // true
-$user->hasRole(['owner', 'admin'], true);       // false, user does not have admin role
+$user->hasGroup(['owner', 'admin']);             // true
+$user->hasGroup(['owner', 'admin'], true);       // false, user does not have admin group
 $user->can(['edit-user', 'create-post']);       // true
 $user->can(['edit-user', 'create-post'], true); // false, user does not have edit-user permission
 ```
 
-You can have as many `Role`s as you want for each `User` and vice versa. Also, you can have as many direct `Permissions`s as you want for each `User` and vice versa.
+You can have as many `Group`s as you want for each `User` and vice versa. Also, you can have as many direct `Permissions`s as you want for each `User` and vice versa.
 
-The `Laratrust` class has shortcuts to both `can()` and `hasRole()` for the currently logged in user:
+The `Laratrust` class has shortcuts to both `can()` and `hasGroup()` for the currently logged in user:
 
 ```php
-Laratrust::hasRole('role-name');
+Laratrust::hasGroup('group-name');
 Laratrust::can('permission-name');
 
 // is identical to
 
-Auth::user()->hasRole('role-name');
+Auth::user()->hasGroup('group-name');
 Auth::user()->hasPermission('permission-name');
 ```
 
@@ -218,13 +218,13 @@ $user->canCreateUsers();
 ## User ability
 
 More advanced checking can be done using the awesome `ability` function.
-It takes in three parameters (roles, permissions, options):
+It takes in three parameters (groups, permissions, options):
 
-* `roles` is a set of roles to check.
+* `groups` is a set of groups to check.
 * `permissions` is a set of permissions to check.
 * `options` is a set of options to change the method behavior.
 
-Either of the roles or permissions variable can be a pipe separated string or an array:
+Either of the groups or permissions variable can be a pipe separated string or an array:
 
 ```php
 $user->ability(['admin', 'owner'], ['create-post', 'edit-user']);
@@ -234,7 +234,7 @@ $user->ability(['admin', 'owner'], ['create-post', 'edit-user']);
 $user->ability('admin|owner', 'create-post|edit-user');
 ```
 
-This will check whether the user has any of the provided roles and permissions.
+This will check whether the user has any of the provided groups and permissions.
 In this case it will return true since the user is an `admin` and has the `create-post` permission.
 
 The third parameter is an options array:
@@ -246,7 +246,7 @@ $options = [
 ];
 ```
 
-* `validate_all` is a boolean flag to set whether to check all the values for true, or to return true if at least one role or permission is matched.
+* `validate_all` is a boolean flag to set whether to check all the values for true, or to return true if at least one group or permission is matched.
 * `return_type` specifies whether to return a boolean, array of checked values, or both in an array.
 
 Here is an example output:
@@ -268,8 +268,8 @@ var_dump($validate);
 
 var_dump($allValidations);
 // array(4) {
-//     ['role'] => bool(true)
-//     ['role_2'] => bool(false)
+//     ['group'] => bool(true)
+//     ['group_2'] => bool(false)
 //     ['create-post'] => bool(true)
 //     ['edit-user'] => bool(false)
 // }
@@ -286,13 +286,13 @@ Auth::user()->ability('admin|owner', 'create-post|edit-user');
 ```
 
 ## Retrieving Relationships
-The `LaratrustUserTrait` has the `roles` and `permissions` relationship, that return a `MorphToMany` relationships.
+The `LaratrustUserTrait` has the `groups` and `permissions` relationship, that return a `MorphToMany` relationships.
 
-The `roles` relationship has all the roles attached to the user.
+The `groups` relationship has all the groups attached to the user.
 
 The `permissions` relationship has all the direct permissions attached to the user.
 
-If you want to retrieve all the user permissions, you can use the `allPermissions` method. It returns a unified collection with all the permissions related to the user (via the roles and permissions relationships).
+If you want to retrieve all the user permissions, you can use the `allPermissions` method. It returns a unified collection with all the permissions related to the user (via the groups and permissions relationships).
 
 ```php
 dump($user->allPermissions());
@@ -328,11 +328,11 @@ dump($user->allPermissions());
 */
 ```
 
-If you want to retrieve the users that have some role you can use the query scope `whereRoleIs` or `orWhereRoleIs`:
+If you want to retrieve the users that have some group you can use the query scope `whereGroupIs` or `orWhereGroupIs`:
 
 ```php
-// This will return the users with 'admin' role.
-$users = User::whereRoleIs('admin')->orWhereRoleIs('regular-user')->get();
+// This will return the users with 'admin' group.
+$users = User::whereGroupIs('admin')->orWhereGroupIs('regular-user')->get();
 ```
 
 Also, if you want to retrieve the users that have some permission you can use the query scope `wherePermissionIs` or `orWherePermissionIs`:
@@ -367,12 +367,12 @@ public function update (Post $post) {
 }
 ```
 
-### Permissions, Roles & Ownership Checks
-If you want to check if a user can do something or has a role, and also is the owner of an object you can use the `canAndOwns` and `hasRoleAndOwns` methods:
+### Permissions, Groups & Ownership Checks
+If you want to check if a user can do something or has a group, and also is the owner of an object you can use the `canAndOwns` and `hasGroupAndOwns` methods:
 
 Both methods accept three parameters:
 
-* `permission` or `role` are the permission or role to check (This can be an array of roles or permissions).
+* `permission` or `group` are the permission or group to check (This can be an array of groups or permissions).
 * `thing` is the object used to check the ownership.
 * `options` is a set of options to change the method behavior (optional).
 
@@ -393,12 +393,12 @@ $user->canAndOwns('edit-post', $post);
 $user->canAndOwns(['edit-post', 'delete-post'], $post);
 $user->canAndOwns(['edit-post', 'delete-post'], $post, ['requireAll' => false, 'foreignKeyName' => 'writer_id']);
 
-$user->hasRoleAndOwns('admin', $post);
-$user->hasRoleAndOwns(['admin', 'writer'], $post);
-$user->hasRoleAndOwns(['admin', 'writer'], $post, ['requireAll' => false, 'foreignKeyName' => 'writer_id']);
+$user->hasGroupAndOwns('admin', $post);
+$user->hasGroupAndOwns(['admin', 'writer'], $post);
+$user->hasGroupAndOwns(['admin', 'writer'], $post, ['requireAll' => false, 'foreignKeyName' => 'writer_id']);
 ```
 
-The `Laratrust` class has a shortcut to `owns()`, `canAndOwns` and `hasRoleAndOwns` methods for the currently logged in user:
+The `Laratrust` class has a shortcut to `owns()`, `canAndOwns` and `hasGroupAndOwns` methods for the currently logged in user:
 
 ```php
 Laratrust::owns($post);
@@ -407,12 +407,12 @@ Laratrust::owns($post, 'idUser');
 Laratrust::canAndOwns('edit-post', $post);
 Laratrust::canAndOwns(['edit-post', 'delete-post'], $post, ['requireAll' => false, 'foreignKeyName' => 'writer_id']);
 
-Laratrust::hasRoleAndOwns('admin', $post);
-Laratrust::hasRoleAndOwns(['admin', 'writer'], $post, ['requireAll' => false, 'foreignKeyName' => 'writer_id']);
+Laratrust::hasGroupAndOwns('admin', $post);
+Laratrust::hasGroupAndOwns(['admin', 'writer'], $post, ['requireAll' => false, 'foreignKeyName' => 'writer_id']);
 ```
 
 ### Ownable Interface
-If the object ownership is resolved through a more complex logic you can implement the Ownable interface so you can use the `owns`, `canAndOwns` and `hasRoleAndOwns` methods in those cases:
+If the object ownership is resolved through a more complex logic you can implement the Ownable interface so you can use the `owns`, `canAndOwns` and `hasGroupAndOwns` methods in those cases:
 
 ```php
 class SomeOwnedObject implements \Laratrust\Contracts\Ownable
@@ -446,45 +446,45 @@ $user->owns($theObject);            // This will return true or false depending 
 The teams feature is **optional**, please go to the <docs-link to="/configuration/teams.html">teams configuration</docs-link> in order to use the feature.
 :::
 
-### Roles Assignment & Removal
-The roles assignment and removal are the same, but this time you can pass the team as an optional parameter.
+### Groups Assignment & Removal
+The groups assignment and removal are the same, but this time you can pass the team as an optional parameter.
 
 ```php
 $team = Team::where('name', 'my-awesome-team')->first();
-$admin = Role::where('name', 'admin')->first();
+$admin = Group::where('name', 'admin')->first();
 
-$user->attachRole($admin, $team); // parameter can be an object, array, id or the string name.
+$user->attachGroup($admin, $team); // parameter can be an object, array, id or the string name.
 ```
 
-This will attach the `admin` role to the user but only within the `my-awesome-team` team.
+This will attach the `admin` group to the user but only within the `my-awesome-team` team.
 
-You can also attach multiple roles to the user within a team:
+You can also attach multiple groups to the user within a team:
 
 ```php
 $team = Team::where('name', 'my-awesome-team')->first();
-$admin = Role::where('name', 'admin')->first();
-$owner = Role::where('name', 'owner')->first();
+$admin = Group::where('name', 'admin')->first();
+$owner = Group::where('name', 'owner')->first();
 
-$user->attachRoles([$admin, $owner], $team); // parameter can be an object, array, id or the string name.
+$user->attachGroups([$admin, $owner], $team); // parameter can be an object, array, id or the string name.
 ```
 
-To remove the roles you can do:
+To remove the groups you can do:
 
 ```php
-$user->detachRole($admin, $team); // parameter can be an object, array, id or the string name.
-$user->detachRoles([$admin, $owner], $team); // parameter can be an object, array, id or the string name.
+$user->detachGroup($admin, $team); // parameter can be an object, array, id or the string name.
+$user->detachGroups([$admin, $owner], $team); // parameter can be an object, array, id or the string name.
 ```
 
-You can also sync roles within a group:
+You can also sync groups within a group:
 
 ```php
-$user->syncRoles([$admin, $owner], $team); // parameter can be an object, array, id or the string name.
+$user->syncGroups([$admin, $owner], $team); // parameter can be an object, array, id or the string name.
 ```
 
 ::: tip IMPORTANT
-It will sync the roles depending of the team passed, because there is a `wherePivot` constraint in the syncing method. So if you pass a team with id of 1, it will sync all the roles that are attached to the user where the team id is 1.
+It will sync the groups depending of the team passed, because there is a `wherePivot` constraint in the syncing method. So if you pass a team with id of 1, it will sync all the groups that are attached to the user where the team id is 1.
 
-So if you don't pass any team, it will sync the roles where the team id is `null` in the pivot table.
+So if you don't pass any team, it will sync the groups where the team id is `null` in the pivot table.
 :::
 
 ### Permissions Assignment & Removal
@@ -528,22 +528,22 @@ It will sync the permissions depending of the team passed, because there is a `w
 So if you don't pass any team, it will sync the permissions where the team id is `null` in the pivot table.
 :::
 
-### Checking Roles & Permissions
-The roles and permissions verification is the same, but this time you can pass the team parameter.
+### Checking Groups & Permissions
+The groups and permissions verification is the same, but this time you can pass the team parameter.
 
-The teams roles and permissions check can be configured by changing the `teams_strict_check` value inside the `config/laratrust.php` file. This value can be `true` or `false`:
+The teams groups and permissions check can be configured by changing the `teams_strict_check` value inside the `config/laratrust.php` file. This value can be `true` or `false`:
 
 - If `teams_strict_check` is set to `false`:
-    When checking for a role or permission if no team is given, it will check if the user has the role or permission regardless if that role or permissions was attached inside a team.
+    When checking for a group or permission if no team is given, it will check if the user has the group or permission regardless if that group or permissions was attached inside a team.
 
 - If `teams_strict_check` is set to `true`:
-    When checking for a role or permission if no team is given, it will check if the user has the role or permission where the team id is null.
+    When checking for a group or permission if no team is given, it will check if the user has the group or permission where the team id is null.
 
-Check roles:
+Check groups:
 
 ```php
-    $user->hasRole('admin', 'my-awesome-team');
-    $user->hasRole(['admin', 'user'], 'my-awesome-team', true);
+    $user->hasGroup('admin', 'my-awesome-team');
+    $user->hasGroup(['admin', 'user'], 'my-awesome-team', true);
 ```
 
 Check permissions:
@@ -566,8 +566,8 @@ $user->ability(['admin'], ['edit-user'], 'my-awesome-team');
 $user->ability(['admin'], ['edit-user'], 'my-awesome-team', $options);
 ```
 
-### Permissions, Roles & Ownership Checks
-The permissions, roles and ownership checks work the same, but this time you can pass the team in the options array.
+### Permissions, Groups & Ownership Checks
+The permissions, groups and ownership checks work the same, but this time you can pass the team in the options array.
 
 ```php
 $options = [
@@ -578,5 +578,5 @@ $options = [
 
 $post = Post::find(1);
 $user->canAndOwns(['edit-post', 'delete-post'], $post, $options);
-$user->hasRoleAndOwns(['admin', 'writer'], $post, $options);
+$user->hasGroupAndOwns(['admin', 'writer'], $post, $options);
 ```

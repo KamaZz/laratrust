@@ -8,23 +8,23 @@ use Illuminate\Support\Facades\Config;
 trait LaratrustHasScopes
 {
     /**
-     * This scope allows to retrive the users with a specific role.
+     * This scope allows to retrive the users with a specific group.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string|array<string>  $role
+     * @param  string|array<string>  $group
      * @param  mixed  $team
      * @param  string  $boolean
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeWhereRoleIs($query, $role = '', $team = null, $boolean = 'and')
+    public function scopeWhereGroupIs($query, $group = '', $team = null, $boolean = 'and')
     {
         $method = $boolean == 'and' ? 'whereHas' : 'orWhereHas';
 
-        return $query->$method('roles', function ($roleQuery) use ($role, $team) {
+        return $query->$method('groups', function ($groupQuery) use ($group, $team) {
             $teamsStrictCheck = Config::get('laratrust.teams.strict_check');
-            $method = is_array($role) ? 'whereIn' : 'where';
+            $method = is_array($group) ? 'whereIn' : 'where';
 
-            $roleQuery->$method('name', $role)
+            $groupQuery->$method('name', $group)
                 ->when($team || $teamsStrictCheck, function ($query) use ($team) {
                     $team = Helper::getIdFor($team, 'team');
                     return $query->where(Helper::teamForeignKey(), $team);
@@ -33,16 +33,16 @@ trait LaratrustHasScopes
     }
 
     /**
-     * This scope allows to retrive the users with a specific role.
+     * This scope allows to retrive the users with a specific group.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string|array<string>  $role
+     * @param  string|array<string>  $group
      * @param  mixed  $team
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeOrWhereRoleIs($query, $role = '', $team = null)
+    public function scopeOrWhereGroupIs($query, $group = '', $team = null)
     {
-        return $this->scopeWhereRoleIs($query, $role, $team, 'or');
+        return $this->scopeWhereGroupIs($query, $group, $team, 'or');
     }
 
     /**
@@ -58,7 +58,7 @@ trait LaratrustHasScopes
         return $query->$method(function ($query) use ($permission) {
             $method = is_array($permission) ? 'whereIn' : 'where';
 
-            $query->whereHas('roles.permissions', function ($permissionQuery) use ($method, $permission) {
+            $query->whereHas('groups.permissions', function ($permissionQuery) use ($method, $permission) {
                 $permissionQuery->$method('name', $permission);
             })->orWhereHas('permissions', function ($permissionQuery) use ($method, $permission) {
                 $permissionQuery->$method('name', $permission);
@@ -79,14 +79,14 @@ trait LaratrustHasScopes
     }
 
     /**
-     * Filter by the users that don't have roles assigned.
+     * Filter by the users that don't have groups assigned.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeWhereDoesntHaveRole($query)
+    public function scopeWhereDoesntHaveGroup($query)
     {
-        return $query->doesntHave('roles');
+        return $query->doesntHave('groups');
     }
 
     /**
@@ -99,7 +99,7 @@ trait LaratrustHasScopes
     {
         return $query->where(function ($query) {
             $query->doesntHave('permissions')
-                ->orDoesntHave('roles.permissions');
+                ->orDoesntHave('groups.permissions');
         });
     }
 }

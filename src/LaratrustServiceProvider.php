@@ -67,7 +67,7 @@ class LaratrustServiceProvider extends ServiceProvider
         }
 
         $middlewares = [
-            'role' => \Laratrust\Middleware\LaratrustRole::class,
+            'group' => \Laratrust\Middleware\LaratrustGroup::class,
             'permission' => \Laratrust\Middleware\LaratrustPermission::class,
             'ability' => \Laratrust\Middleware\LaratrustAbility::class,
         ];
@@ -107,7 +107,7 @@ class LaratrustServiceProvider extends ServiceProvider
             'namespace' => 'Laratrust\Http\Controllers',
             'middleware' => config('laratrust.panel.middleware', 'web'),
         ], function () {
-            Route::redirect('/', '/'. config('laratrust.panel.path'). '/roles-assignment');
+            Route::redirect('/', '/'. config('laratrust.panel.path'). '/groups-assignment');
             $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         });
     }
@@ -222,7 +222,7 @@ class LaratrustServiceProvider extends ServiceProvider
             $this->commands([
                 Console\AddLaratrustUserTraitUseCommand::class,
                 Console\MakePermissionCommand::class,
-                Console\MakeRoleCommand::class,
+                Console\MakeGroupCommand::class,
                 Console\MakeSeederCommand::class,
                 Console\MakeTeamCommand::class,
                 Console\MigrationCommand::class,

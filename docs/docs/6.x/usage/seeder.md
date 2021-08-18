@@ -1,6 +1,6 @@
 # Seeder
 
-Laratrust comes with a database seeder, this seeder helps you fill the permissions for each role depending on the module, and creates one user for each role.
+Laratrust comes with a database seeder, this seeder helps you fill the permissions for each group depending on the module, and creates one user for each group.
 
 ::: tip NOTE
 - The seeder is going to work with the first user model inside the `user_models` array.
@@ -14,7 +14,7 @@ To generate the seeder you have to run:
 php artisan laratrust:seeder
 ```
 
-Then to customize the roles, modules and permissions you can publish the `laratrust_seeder.php` file:
+Then to customize the groups, modules and permissions you can publish the `laratrust_seeder.php` file:
 
 ```bash
 php artisan vendor:publish --tag="laratrust-seeder"
@@ -38,7 +38,7 @@ Your `config/laratrust_seeder.php` file looks like this by default:
 ```php
 return [
     ...
-    'roles_structure' => [
+    'groups_structure' => [
         'superadministrator' => [
             'users' => 'c,r,u,d',
             'payments' => 'c,r,u,d',
@@ -51,7 +51,7 @@ return [
         'user' => [
             'profile' => 'r,u',
         ],
-        'role_name' => [
+        'group_name' => [
             'module_1_name' => 'c,r,u,d',
         ]
     ],
@@ -66,18 +66,18 @@ return [
 
 ```
 
-To understand the `role_structure` you must know:
+To understand the `group_structure` you must know:
 
-* The first level represents the roles.
+* The first level represents the groups.
 * The second level represents the modules.
 * The second level assignments are the permissions.
 
-With that in mind, you should arrange your roles, modules and permissions like this:
+With that in mind, you should arrange your groups, modules and permissions like this:
 
 ```php
 return [
-    'role_structure' => [
-        'role' => [
+    'group_structure' => [
+        'group' => [
             'module' => 'permissions',
         ],
     ]
@@ -92,8 +92,8 @@ For example:
 ```php
 return [
     ...
-    'roles_structure' => [
-        'role_name' => [
+    'groups_structure' => [
+        'group_name' => [
             'module_1_name' => 'a,s,e,d',
         ]
     ],
