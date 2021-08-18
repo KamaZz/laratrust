@@ -138,12 +138,8 @@ trait LaratrustUserTrait
      */
     public function permissions()
     {
-        $permissions = $this->morphToMany(
-            Config::get('laratrust.models.permission'),
-            'user',
-            Config::get('laratrust.tables.permission_user'),
-            Config::get('laratrust.foreign_keys.user'),
-            Config::get('laratrust.foreign_keys.permission')
+        $permissions = $this->belongsToMany(
+            Config::get('laratrust.models.permission')
         );
 
         if (Config::get('laratrust.teams.enabled')) {
