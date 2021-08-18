@@ -2,6 +2,7 @@
 
 namespace Laratrust\Traits;
 
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Laratrust\Helper;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
@@ -48,16 +49,12 @@ trait LaratrustUserTrait
     /**
      * Many-to-Many relations with Group.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     * @return belongsToMany
      */
     public function groups()
     {
-        $groups = $this->morphToMany(
-            Config::get('laratrust.models.group'),
-            'user',
-            Config::get('laratrust.tables.group_user'),
-            Config::get('laratrust.foreign_keys.user'),
-            Config::get('laratrust.foreign_keys.group')
+        $groups = $this->belongsToMany(
+            Config::get('laratrust.models.group')
         );
 
         if (Config::get('laratrust.teams.enabled')) {
@@ -70,7 +67,7 @@ trait LaratrustUserTrait
     /**
      * Many-to-Many relations with Team associated through the groups.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     * @return MorphToMany
      */
     public function groupsTeams()
     {
@@ -91,7 +88,7 @@ trait LaratrustUserTrait
     /**
      * Many-to-Many relations with Team associated through the permissions user is given.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     * @return MorphToMany
      */
     public function permissionsTeams()
     {
@@ -137,7 +134,7 @@ trait LaratrustUserTrait
     /**
      * Many-to-Many relations with Permission.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     * @return MorphToMany
      */
     public function permissions()
     {
